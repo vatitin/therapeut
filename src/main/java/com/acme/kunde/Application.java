@@ -36,9 +36,6 @@ import static org.springframework.hateoas.support.WebStack.WEBMVC;
  */
 @SpringBootApplication(proxyBeanMethods = false)
 @Import({ApplicationConfig.class, DevConfig.class})
-@EnableHypermediaSupport(type = HAL, stacks = WEBMVC)
-@EnableWebSecurity
-@EnableMethodSecurity
 @ SuppressWarnings({"ImplicitSubclassInspection", "ClassUnconnectedToPackage"})
 public class Application {
     private Application() {

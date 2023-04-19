@@ -55,27 +55,7 @@ interface SecurityConfig {
             .authorizeHttpRequests(authorize -> {
                 final var restPathKundeId = REST_PATH + "/*";
                 authorize
-                    // https://spring.io/blog/2020/06/30/url-matching-with-pathpattern-in-spring-mvc
-                    // https://docs.spring.io/spring-security/reference/6.0.1/servlet/integrations/mvc.html
-                    .requestMatchers(GET, REST_PATH).hasRole(ADMIN.name())
-                    .requestMatchers(GET, REST_PATH + NACHNAME_PATH + "/*").hasRole(ADMIN.name())
-                    .requestMatchers(GET, restPathKundeId).hasAnyRole(ADMIN.name(), KUNDE.name())
-                    .requestMatchers(PUT, restPathKundeId).hasRole(ADMIN.name())
-                    .requestMatchers(PATCH, restPathKundeId).hasRole(ADMIN.name())
-                    .requestMatchers(DELETE, restPathKundeId).hasRole(ADMIN.name())
-
-                    .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
-                    .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ACTUATOR.name())
-
-                    .requestMatchers(POST, REST_PATH).permitAll()
-                    .requestMatchers(POST, "/graphql").permitAll()
-                    .requestMatchers(GET, "/v3/api-docs.yaml").permitAll()
-                    .requestMatchers(GET, "/v3/api-docs").permitAll()
-                    .requestMatchers(GET, "/graphiql").permitAll()
-                    .requestMatchers("/h2-console", "/h2-console/*").permitAll()
-                    .requestMatchers("/error").permitAll()
-
-                    .anyRequest().authenticated();
+                    .anyRequest().permitAll();
             })
             .httpBasic()
             .and()
