@@ -14,24 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.acme.kunde;
+package com.acme.therapeut;
 
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
-import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
-
-import static com.acme.kunde.rest.KundeGetController.NACHNAME_PATH;
-import static com.acme.kunde.rest.KundeGetController.REST_PATH;
-import static com.acme.kunde.security.Rolle.*;
-import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.crypto.factory.PasswordEncoderFactories.createDelegatingPasswordEncoder;
 
 /**
@@ -53,7 +42,6 @@ interface SecurityConfig {
     default SecurityFilterChain securityFilterChainFn(final HttpSecurity http) throws Exception {
         return http
             .authorizeHttpRequests(authorize -> {
-                final var restPathKundeId = REST_PATH + "/*";
                 authorize
                     .anyRequest().permitAll();
             })
@@ -77,6 +65,7 @@ interface SecurityConfig {
         return createDelegatingPasswordEncoder();
     }
 
+
     /**
      * Bean, um Test-User anzulegen. Dazu gehören jeweils ein Benutzername, ein Passwort und diverse Rollen.
      * Das wird in Beispiel 2 verbessert werden.
@@ -84,6 +73,7 @@ interface SecurityConfig {
      * @param passwordEncoder Injiziertes Objekt zur Passwort-Verschlüsselung
      * @return Ein Objekt, mit dem diese (Test-) User verwaltet werden, z.B. für die künftige Suche.
      */
+    /*
     @Bean
     default UserDetailsService userDetailsService(final PasswordEncoder passwordEncoder) {
         final var password = passwordEncoder.encode("p");
@@ -101,4 +91,6 @@ interface SecurityConfig {
 
         return new InMemoryUserDetailsManager(users);
     }
+
+     */
 }

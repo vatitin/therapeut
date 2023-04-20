@@ -18,4 +18,4 @@
 /**
  * Microservice "kunde".
  */
-package com.acme.kunde;
+package com.acme.therapeut;

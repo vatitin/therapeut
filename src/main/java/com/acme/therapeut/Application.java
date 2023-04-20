@@ -14,20 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.acme.kunde;
+package com.acme.therapeut;
 
-import com.acme.kunde.dev.DevConfig;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
-import org.springframework.hateoas.config.EnableHypermediaSupport;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import static com.acme.kunde.Banner.TEXT;
-import static org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType.HAL;
-import static org.springframework.hateoas.support.WebStack.WEBMVC;
+import static com.acme.therapeut.Banner.TEXT;
 
 /**
  * Klasse mit der main-Methode für die Anwendung auf Basis von Spring Boot.
@@ -35,7 +28,7 @@ import static org.springframework.hateoas.support.WebStack.WEBMVC;
  * @author <a href="mailto:Juergen.Zimmermann@h-ka.de">Jürgen Zimmermann</a>
  */
 @SpringBootApplication(proxyBeanMethods = false)
-@Import({ApplicationConfig.class, DevConfig.class})
+//@Import({ApplicationConfig.class, DevConfig.class})
 @ SuppressWarnings({"ImplicitSubclassInspection", "ClassUnconnectedToPackage"})
 public class Application {
     private Application() {
