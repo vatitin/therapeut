@@ -1,4 +1,4 @@
-package com.acme.therapeut.enitiy;
+package com.acme.therapeut.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

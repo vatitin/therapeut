@@ -2,4 +2,4 @@
 /**
  * Entity-Klassen für Therapeuten.
  */
-package com.acme.therapeut.enitiy;
+package com.acme.therapeut.entity;
