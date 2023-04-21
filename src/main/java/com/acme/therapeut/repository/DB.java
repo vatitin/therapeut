@@ -19,16 +19,15 @@ package com.acme.therapeut.repository;
 import com.acme.therapeut.entity.Adresse;
 import com.acme.therapeut.entity.Therapeut;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.acme.therapeut.entity.GeschlechtType.*;
+import static com.acme.therapeut.entity.GeschlechtType.DIVERS;
+import static com.acme.therapeut.entity.GeschlechtType.MAENNLICH;
+import static com.acme.therapeut.entity.GeschlechtType.WEIBLICH;
 import static com.acme.therapeut.entity.TaetigkeitsbereichType.MASSAGE;
 import static com.acme.therapeut.entity.TaetigkeitsbereichType.PHYSIO;
 
@@ -53,7 +52,7 @@ final class DB {
             // admin
             Therapeut.builder()
                 .id(UUID.fromString("00000000-0000-0000-0000-000000000000"))
-                .nachname("Admin-Nachname")
+                .nachname("admin")
                 .vorname("Admin-Vorname")
                 .email("admin@acme.com")
                 .geburtsdatum(LocalDate.parse("2002-03-12"))
@@ -84,16 +83,16 @@ final class DB {
                 .build(),
 
             // zur freien Verfuegung
-                Therapeut.builder()
-                    .id(UUID.fromString("00000000-0000-0000-0000-000000000060"))
-                    .nachname("Müller")
-                    .vorname("Anton")
-                    .email("Anton-Müller@acme.com")
-                    .geburtsdatum(LocalDate.parse("1998-08-04"))
-                    .geschlecht(DIVERS)
-                    .taetigkeitsbereiche(List.of(MASSAGE))
-                    .adresse(Adresse.builder().plz("50667").ort("Köln").build())
-                    .build())
+            Therapeut.builder()
+                .id(UUID.fromString("00000000-0000-0000-0000-000000000060"))
+                .nachname("Müller")
+                .vorname("Anton")
+                .email("Anton-Müller@acme.com")
+                .geburtsdatum(LocalDate.parse("1998-08-04"))
+                .geschlecht(DIVERS)
+                .taetigkeitsbereiche(List.of(MASSAGE))
+                .adresse(Adresse.builder().plz("50667").ort("Köln").build())
+                .build())
             .collect(Collectors.toList());
 
         // Rueckwaertsverweise fuer Adresse
