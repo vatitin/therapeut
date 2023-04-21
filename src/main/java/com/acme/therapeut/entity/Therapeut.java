@@ -5,7 +5,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import java.time.LocalDate;
@@ -38,6 +42,7 @@ public class Therapeut {
 
     /**
      * Die ID des Therapeuten.
+     *
      * @param id Die ID.
      * @return Die ID.
      */
@@ -46,6 +51,7 @@ public class Therapeut {
 
     /**
      * Der Nachname des Therapeuten.
+     *
      * @param nachname Der Nachname.
      * @return Der Nachname.
      */
@@ -55,6 +61,7 @@ public class Therapeut {
 
     /**
      * Der Vorname des Therapeuten.
+     *
      * @param vorname Der Vorname.
      * @return Der Vorname.
      */
@@ -64,6 +71,7 @@ public class Therapeut {
 
     /**
      * Die Emailadresse des Therapeuten.
+     *
      * @param email Die Emailadresse.
      * @return Die Emailadresse.
      */
@@ -73,6 +81,7 @@ public class Therapeut {
 
     /**
      * Das Geburtsdatum des Therapeuten.
+     *
      * @param geburtsdatum Das Geburtsdatum.
      * @return Das Geburtsdatum.
      */
@@ -82,6 +91,7 @@ public class Therapeut {
 
     /**
      * Das Geschlecht des Therapeuten.
+     *
      * @param geschlecht Das Geschlecht.
      * @return Das Geschlecht.
      */
@@ -89,6 +99,7 @@ public class Therapeut {
 
     /**
      * Die Adresse des Therapeuten.
+     *
      * @param adresse Die Adresse.
      * @return Die Adresse.
      */
@@ -99,6 +110,7 @@ public class Therapeut {
 
     /**
      * Die Taetigkeitsbereiche des Therapeuten.
+     *
      * @param taetigkeitsbereiche Die Taetigkeitsbereiche.
      * @return Die Taetigkeitsbereiche.
      */

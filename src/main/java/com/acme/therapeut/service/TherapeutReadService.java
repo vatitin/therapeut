@@ -4,7 +4,6 @@ import com.acme.therapeut.entity.Therapeut;
 import com.acme.therapeut.repository.TherapeutRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -17,7 +16,6 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public final class TherapeutReadService {
 
     private final TherapeutRepository repo;
