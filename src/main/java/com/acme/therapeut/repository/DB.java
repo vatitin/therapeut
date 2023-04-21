@@ -102,11 +102,4 @@ final class DB {
         return therapeuten;
     }
 
-    private static URL buildURL(final String url) {
-        try {
-            return URI.create(url).toURL();
-        } catch (final MalformedURLException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
 }

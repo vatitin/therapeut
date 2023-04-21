@@ -29,7 +29,6 @@ import static com.acme.therapeut.Banner.TEXT;
  */
 @SpringBootApplication(proxyBeanMethods = false)
 //@Import({ApplicationConfig.class, DevConfig.class})
-@ SuppressWarnings({"ImplicitSubclassInspection", "ClassUnconnectedToPackage"})
 public class Application {
     private Application() {
     }

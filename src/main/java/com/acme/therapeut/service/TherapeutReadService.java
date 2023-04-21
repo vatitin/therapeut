@@ -28,8 +28,7 @@ public final class TherapeutReadService {
      * @return Die gefundenen Therapeuten oder leere Collection.
      */
     public @NonNull Collection<Therapeut> findAll() {
-        final var therapeut = repo.findAll();
-        return therapeut;
+        return repo.findAll();
     }
 
     /**
