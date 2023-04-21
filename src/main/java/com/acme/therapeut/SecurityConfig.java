@@ -18,9 +18,17 @@ package com.acme.therapeut;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.List;
+
+import static com.acme.therapeut.security.Rolle.ACTUATOR;
+import static com.acme.therapeut.security.Rolle.ADMIN;
+import static com.acme.therapeut.security.Rolle.THERAPEUT;
 import static org.springframework.security.crypto.factory.PasswordEncoderFactories.createDelegatingPasswordEncoder;
 
 /**
@@ -67,13 +75,13 @@ interface SecurityConfig {
 
 
     /**
-     * Bean, um Test-User anzulegen. Dazu gehören jeweils ein Benutzername, ein Passwort und diverse Rollen.
+     * Bean, um Test-Therapeuten anzulegen. Dazu gehören jeweils ein Benutzername, ein Passwort und diverse Rollen.
      * Das wird in Beispiel 2 verbessert werden.
      *
      * @param passwordEncoder Injiziertes Objekt zur Passwort-Verschlüsselung
      * @return Ein Objekt, mit dem diese (Test-) User verwaltet werden, z.B. für die künftige Suche.
      */
-    /*
+
     @Bean
     default UserDetailsService userDetailsService(final PasswordEncoder passwordEncoder) {
         final var password = passwordEncoder.encode("p");
@@ -81,16 +89,18 @@ interface SecurityConfig {
         final var users = List.of(
             User.withUsername("admin")
                 .password(password)
-                .roles(ADMIN.name(), KUNDE.name(), ACTUATOR.name())
+                .roles(ADMIN.name(), THERAPEUT.name(), ACTUATOR.name())
                 .build(),
             User.withUsername("alpha")
                 .password(password)
-                .roles(KUNDE.name())
+                .roles(THERAPEUT.name())
                 .build()
         );
 
         return new InMemoryUserDetailsManager(users);
     }
 
-     */
+
+
+
 }
