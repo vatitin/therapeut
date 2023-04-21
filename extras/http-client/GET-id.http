@@ -1,6 +1,6 @@
 
 ### Suche mit vorhandener Therapeut-ID
-GET {{restUrl}}/00000000-0000-0000-0000-000000000001
+GET {{restUrl}}/00000000-0000-0000-0000-000000000000
 Accept: application/json
 
 
