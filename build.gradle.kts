@@ -161,7 +161,7 @@ group = "com.acme"
 version = "2023.1.0"
 
 sweeney {
-    enforce(mapOf("type" to "gradle", "expect" to "[8.1.0,8.1.0]"))
+    enforce(mapOf("type" to "gradle", "expect" to "[8.1.0,8.1.1]"))
     // https://www.java.com/releases
     // https://devcenter.heroku.com/articles/java-support#specifying-a-java-version
     enforce(mapOf("type" to "jdk", "expect" to "[19.0.2,21]"))

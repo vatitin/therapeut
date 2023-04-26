@@ -1,0 +1,15 @@
+{
+  "nachname": "Nachnamerest",
+  "vorname": "Vornamerest",
+  "email": "max-mustermann@acme.com",
+  "geburtsdatum": "2002-02-02",
+  "geschlecht": "W",
+  "adresse": {
+    "plz": "99999",
+    "ort": "Restort"
+  },
+  "taetigkeitsbereiche": [
+    "P",
+    "M"
+  ]
+}
