@@ -18,6 +18,8 @@ package com.acme.therapeut;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +31,7 @@ import java.util.List;
 import static com.acme.therapeut.security.Rolle.ACTUATOR;
 import static com.acme.therapeut.security.Rolle.ADMIN;
 import static com.acme.therapeut.security.Rolle.THERAPEUT;
+import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.crypto.factory.PasswordEncoderFactories.createDelegatingPasswordEncoder;
 
 /**
@@ -53,12 +56,10 @@ interface SecurityConfig {
                 authorize
                     .anyRequest().permitAll();
             })
-            .httpBasic()
-            .and()
-            .formLogin().disable()
-            .csrf().disable()
-            .headers().frameOptions().sameOrigin()
-            .and()
+            .httpBasic(withDefaults())
+            .formLogin(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable)
+            .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
             .build();
     }
 
