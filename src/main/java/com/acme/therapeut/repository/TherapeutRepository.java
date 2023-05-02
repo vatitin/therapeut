@@ -26,10 +26,9 @@ public class TherapeutRepository {
      * @return Optional mit dem gefundenen Therapeuten oder leeres Optional
      */
     public Optional<Therapeut> findById(final UUID id) {
-        final var result = THERAPEUTEN.stream()
+        return THERAPEUTEN.stream()
             .filter(kunde -> Objects.equals(kunde.getId(), id))
             .findFirst();
-        return result;
     }
 
     /**

@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import static com.acme.therapeut.rest.TherapeutGetController.REST_PATH;
-import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Eine @RestController-Klasse bildet die REST-Schnittstelle, wobei die HTTP-Methoden, Pfade und MIME-Typen auf die
@@ -53,7 +53,7 @@ public class TherapeutGetController {
      * @param id ID des zu suchenden Therapeuten
      * @return Gefundener Therapeut.
      */
-    @GetMapping(path = "{id:" + ID_PATTERN + "}", produces = HAL_JSON_VALUE)
+    @GetMapping(path = "{id:" + ID_PATTERN + "}", produces = APPLICATION_JSON_VALUE)
     @ApiResponse(responseCode = "200", description = "Therapeut gefunden")
     Therapeut findById(@PathVariable final UUID id) {
         return service.findById(id);
@@ -65,7 +65,7 @@ public class TherapeutGetController {
      *
      * @return gefundene Therapeuten oder leere collection.
      */
-    @GetMapping(produces = HAL_JSON_VALUE)
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ApiResponse(responseCode = "200", description = "Therapeut gefunden")
     Collection<Therapeut> findAll() {
         return service.findAll();

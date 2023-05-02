@@ -19,15 +19,15 @@ apiVersion: autoscaling/v2
 # Anwendung bereitgestellt werden
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "kunde.fullname" . }}
+  name: {{ include "therapeut.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    {{- include "kunde.labels" . | nindent 4 }}
+    {{- include "therapeut.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "kunde.fullname" . }}
+    name: {{ include "therapeut.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

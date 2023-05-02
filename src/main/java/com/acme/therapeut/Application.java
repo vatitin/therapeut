@@ -18,6 +18,7 @@ package com.acme.therapeut;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
 import static com.acme.therapeut.Banner.TEXT;
 
@@ -27,6 +28,7 @@ import static com.acme.therapeut.Banner.TEXT;
  * @author <a href="mailto:Juergen.Zimmermann@h-ka.de">Jürgen Zimmermann</a>
  */
 @SpringBootApplication(proxyBeanMethods = false)
+@Import(ApplicationConfig.class)
 @SuppressWarnings({"ImplicitSubclassInspection", "ClassUnconnectedToPackage"})
 public final class Application {
     private Application() {

@@ -122,7 +122,7 @@ spec:
             httpGet:
               path: /actuator/health/liveness
               port: http
-            # Anzahl Sekunden, bis die Probe fuer Liveness abgesetzt wird
+            # Anzahl Setherapeuten, bis die Probe fuer Liveness abgesetzt wird
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelay }}
             # default: 1 Sek.
             timeoutSeconds: {{ .Values.livenessProbe.timeout }}
@@ -136,7 +136,7 @@ spec:
             httpGet:
               path: /actuator/health/readiness
               port: http
-            # Anzahl Sekunden, bis die Probe fuer Readiness abgesetzt wird
+            # Anzahl Setherapeuten, bis die Probe fuer Readiness abgesetzt wird
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelay }}
             # default: 1 Sek.
             timeoutSeconds: {{ .Values.readinessProbe.timeout }}

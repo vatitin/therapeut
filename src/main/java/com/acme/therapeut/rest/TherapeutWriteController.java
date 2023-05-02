@@ -54,7 +54,6 @@ class TherapeutWriteController {
     private final TherapeutWriteService service;
     private final UriHelper uriHelper;
 
-
     /**
      * Einen neuen Therapeut-Datensatz anlegen.
      *

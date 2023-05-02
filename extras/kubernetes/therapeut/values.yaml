@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Default values for kunde.
+# Default values for therapeut.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -41,7 +41,7 @@ ssl: "true"
 http2: "true"
 
 logLevel:
-  # -- Loglevel für kunde als Umgebungsvariable
+  # -- Loglevel für therapeut als Umgebungsvariable
   application: info
   requestResponse: info
 
@@ -55,7 +55,7 @@ image:
   # -- Repository als Präfix beim Image-Namen
   repository: juergenzimmermann
   # -- Name des Image
-  name: kunde
+  name: therapeut
   # -- Pull-Policy für das Image
   pullPolicy: Always
   # -- Defaultwert ist im Chart bei `appVersion` und kann überschrieben werden.
@@ -87,21 +87,21 @@ resourcesLimits:
   ephemeral: 64Mi
 
 livenessProbe:
-  # -- Anzahl Sekunden, bis die Probe für Liveness abgesetzt wird
+  # -- Anzahl Setherapeuten, bis die Probe für Liveness abgesetzt wird
   initialDelay: 0
-  # -- Timeout für Liveness-Probe in Sekunden
+  # -- Timeout für Liveness-Probe in Setherapeuten
   timeout: 1
-  # -- periodischer Abstand zwischen den Liveness-Proben in Sekunden
+  # -- periodischer Abstand zwischen den Liveness-Proben in Setherapeuten
   period: 10
   # -- Max. Anzahl an Fehlversuchen bei den Liveness-Proben
   failureThreshold: 3
 
 readinessProbe:
-  # -- Anzahl Sekunden, bis die Probe für Readiness abgesetzt wird
+  # -- Anzahl Setherapeuten, bis die Probe für Readiness abgesetzt wird
   initialDelay: 0
-  # -- Timeout für Readiness-Probe in Sekunden
+  # -- Timeout für Readiness-Probe in Setherapeuten
   timeout: 1
-  # -- periodischer Abstand zwischen den Readiness-Proben in Sekunden
+  # -- periodischer Abstand zwischen den Readiness-Proben in Setherapeuten
   period: 10
   # -- Max. Anzahl an Fehlversuchen bei den Readiness-Proben
   failureThreshold: 3
@@ -117,8 +117,8 @@ autoscaling:
   memoryUtilizationPercentage: 80
 
 datasource:
-  url: jdbc:postgresql://localhost/kunde
-  username: kunde
+  url: jdbc:postgresql://localhost/therapeut
+  username: therapeut
   password: Change Me!
 
 h2:

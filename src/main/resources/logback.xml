@@ -38,8 +38,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     <logger name="org.springframework.web.servlet.DispatcherServlet" level="${REQUEST_RESPONSE_LOGLEVEL:-INFO}" />
     <logger name="org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor" level="${REQUEST_RESPONSE_MAPPING_LOGLEVEL:-INFO}" />
     <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="${REQUEST_RESPONSE_MAPPING_LOGLEVEL:-INFO}" />
+    <!--
     <logger name="org.springframework.security.core.userdetails.User" level="ERROR" />
     <logger name="org.springframework.security.web.server.authorization.AuthorizationWebFilter" level="${APPLICATION_LOGLEVEL:-INFO}" />
+    -->
     <logger name="io.micrometer.observation.contextpropagation.ObservationThreadLocalAccessor" level="ERROR" />
 
     <logger name="io.qameta.allure.AllureLifecycle" level="FATAL" />

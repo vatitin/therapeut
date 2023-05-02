@@ -28,9 +28,9 @@ if ($versionMinimum -gt $versionCurrent) {
 # Titel setzen
 $host.ui.RawUI.WindowTitle = 'kubescape'
 
-$release = 'kunde'
-Set-Location ..\$release
+$release = 'therapeut'
+Set-Location .\$release
 helm template $release . -f values.yaml -f dev.yaml > ${env:TEMP}\$release.yaml
 C:\Zimmermann\kubescape\kubescape.exe scan --verbose --enable-host-scan ${env:TEMP}\$release.yaml
-Set-Location ..\kubernetes
+Set-Location ..\
 Remove-Item -Force ${env:TEMP}\$release.yaml
