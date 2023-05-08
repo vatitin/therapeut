@@ -1,0 +1,64 @@
+### Einen Therapeuten mittels PUT aktualisieren
+PUT {{restUrl}}/00000000-0000-0000-0000-000000000020
+Content-Type: application/json
+
+< data/therapeut-30-put.json
+
+> {%
+    client.test('Einen Therapeuten mittels PUT aktualisieren: No Content (204)', () => {
+        const status = response.status;
+        client.assert(status === 204, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Einen Therapeuten mittels PUT aktualisieren: leerer body', () => {
+        const body = response.body;
+        client.assert(body === null, `body: ${JSON.stringify(body)}`);
+    });
+%}
+
+### Einen nicht-vorhandenen Therapeuten mittels PUT aktualisieren: 404 (Not Found)
+PUT {{restUrl}}/ffffffff-ffff-ffff-ffff-ffffffffffff
+Content-Type: application/json
+
+< data/therapeut-30-put.json
+
+> {%
+    client.test('Einen Therapeuten mittels PUT aktualisieren: Not Found (404)', () => {
+        const status = response.status;
+        client.assert(status === 404, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Einen Therapeuten mittels PUT aktualisieren: leerer body', () => {
+        const body = response.body;
+        client.assert(body === null, `body: ${JSON.stringify(body)}`);
+    });
+%}
+
+### Einen Therapeuten mittels PUT aktualisieren und Email existiert: 422 (Unprocessable Entity)
+PUT {{restUrl}}/00000000-0000-0000-0000-000000000030
+Content-Type: application/json
+Authorization: Basic {{userAdmin}} {{password}}
+
+< data/therpeut-30-put-email-exists.json
+
+> {%
+    client.test('Einen Therapeuten mittels PUT aktualisieren und Email existiert: Unprocessable Entity (422)', () => {
+        const status = response.status;
+        client.assert(status === 422, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Einen Therapeuten mittels PUT aktualisieren und Email existiert: application/problem+json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === "application/problem+json", `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Einen Therapeuten mittels PUT aktualisieren und Email existiert: body mit ProblemDetail', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        const detail = body.detail;
+        client.assert(typeof detail === 'string', `body: ${JSON.stringify(body)}`);
+        client.assert(detail === 'Die Emailadresse max-mustermann@acme.com existiert bereits', `detail: ${detail}`);
+    });
+%}
+
+###

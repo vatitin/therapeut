@@ -2,12 +2,15 @@ package com.acme.therapeut.repository;
 
 import com.acme.therapeut.entity.Therapeut;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static com.acme.therapeut.repository.DB.THERAPEUTEN;
 import static java.util.UUID.randomUUID;
@@ -18,6 +21,7 @@ import static java.util.UUID.randomUUID;
  * @author Valentin Sackmann
  */
 @Repository
+@Slf4j
 public class TherapeutRepository {
     /**
      * Einen Therapeuten anhand seiner ID suchen.
@@ -63,5 +67,24 @@ public class TherapeutRepository {
         therapeut.setId(randomUUID());
         THERAPEUTEN.add(therapeut);
         return therapeut;
+    }
+
+    /**
+     * Einen vorhandenen Therapeuten aktualisieren.
+     *
+     * @param therapeut Das Objekt mit den neuen Daten
+     */
+    public void update(final @NonNull Therapeut therapeut) {
+        log.debug("update: {}", therapeut);
+        final OptionalInt index = IntStream
+            .range(0, THERAPEUTEN.size())
+            .filter(i -> Objects.equals(THERAPEUTEN.get(i).getId(), therapeut.getId()))
+            .findFirst();
+        log.trace("update: index={}", index);
+        if (index.isEmpty()) {
+            return;
+        }
+        THERAPEUTEN.set(index.getAsInt(), therapeut);
+        log.debug("update: {}", therapeut);
     }
 }

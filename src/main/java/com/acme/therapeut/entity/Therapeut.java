@@ -42,18 +42,12 @@ public class Therapeut {
 
     /**
      * Die ID des Therapeuten.
-     *
-     * @param id Die ID.
-     * @return Die ID.
      */
     @EqualsAndHashCode.Include
     private UUID id;
 
     /**
      * Der Nachname des Therapeuten.
-     *
-     * @param nachname Der Nachname.
-     * @return Der Nachname.
      */
     @NotNull
     @Pattern(regexp = NACHNAME_PATTERN)
@@ -61,9 +55,6 @@ public class Therapeut {
 
     /**
      * Der Vorname des Therapeuten.
-     *
-     * @param vorname Der Vorname.
-     * @return Der Vorname.
      */
     @NotNull
     @Pattern(regexp = VORNAME_PATTERN)
@@ -71,9 +62,6 @@ public class Therapeut {
 
     /**
      * Die Emailadresse des Therapeuten.
-     *
-     * @param email Die Emailadresse.
-     * @return Die Emailadresse.
      */
     @Email
     @NotNull
@@ -81,9 +69,6 @@ public class Therapeut {
 
     /**
      * Das Geburtsdatum des Therapeuten.
-     *
-     * @param geburtsdatum Das Geburtsdatum.
-     * @return Das Geburtsdatum.
      */
     @Past
     private LocalDate geburtsdatum;
@@ -91,17 +76,11 @@ public class Therapeut {
 
     /**
      * Das Geschlecht des Therapeuten.
-     *
-     * @param geschlecht Das Geschlecht.
-     * @return Das Geschlecht.
      */
     private GeschlechtType geschlecht;
 
     /**
      * Die Adresse des Therapeuten.
-     *
-     * @param adresse Die Adresse.
-     * @return Die Adresse.
      */
     @Valid
     @ToString.Exclude
@@ -110,9 +89,6 @@ public class Therapeut {
 
     /**
      * Die Taetigkeitsbereiche des Therapeuten.
-     *
-     * @param taetigkeitsbereiche Die Taetigkeitsbereiche.
-     * @return Die Taetigkeitsbereiche.
      */
     @UniqueElements
     @ToString.Exclude

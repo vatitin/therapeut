@@ -1,0 +1,15 @@
+{
+  "nachname": "Testput",
+  "vorname": "testput",
+  "email": "max-mustermann@acme.com",
+  "geburtsdatum": "2002-01-12",
+  "geschlecht": "M",
+  "adresse": {
+    "plz": "76137",
+    "ort": "TestKarlsruhe"
+  },
+  "taetigkeitsbereiche": [
+    "P",
+    "M"
+  ]
+}

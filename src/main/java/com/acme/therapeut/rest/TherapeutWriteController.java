@@ -16,6 +16,7 @@
  */
 package com.acme.therapeut.rest;
 
+import com.acme.therapeut.service.ConstraintViolationsException;
 import com.acme.therapeut.service.EmailExistsException;
 import com.acme.therapeut.service.TherapeutWriteService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,13 +27,18 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.net.URI;
+import java.util.UUID;
 
 import static com.acme.therapeut.rest.TherapeutGetController.REST_PATH;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.created;
@@ -74,6 +80,50 @@ class TherapeutWriteController {
         final var baseUri = uriHelper.getBaseUri(request).toString();
         final var location = URI.create(baseUri + '/' + therapeut.getId());
         return created(location).build();
+    }
+
+    /**
+     * Einen vorhandenen Therapeut-Datensatz überschreiben.
+     *
+     * @param id ID des zu aktualisierenden Therapeuten.
+     * @param therapeutDTO Das Therapeutenobjekt aus dem eingegangenen Request-Body.
+     */
+    @PutMapping(path = "{id}", produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(NO_CONTENT)
+    void update(@PathVariable final UUID id, @RequestBody final TherapeutDTO therapeutDTO
+    ) {
+        log.debug("update: id={}, {}", id, therapeutDTO);
+        service.update(therapeutDTO.toTherapeut(), id);
+    }
+
+    @ExceptionHandler
+    ProblemDetail onConstraintViolations(
+        final ConstraintViolationsException ex,
+        final HttpServletRequest request
+    ) {
+        log.debug("onConstraintViolations: {}", ex.getMessage());
+
+        final var therapeutViolations = ex.getViolations()
+            .stream()
+            .map(violation -> violation.getPropertyPath() + ": " +
+                violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName() + " " +
+                violation.getMessage())
+            .toList();
+        log.trace("onConstraintViolations: {}", therapeutViolations);
+        final String detail;
+        if (therapeutViolations.isEmpty()) {
+            detail = "N/A";
+        } else {
+            // [ und ] aus dem String der Liste entfernen
+            final var violationsStr = therapeutViolations.toString();
+            detail = violationsStr.substring(1, violationsStr.length() - 2);
+        }
+
+        final var problemDetail = ProblemDetail.forStatusAndDetail(UNPROCESSABLE_ENTITY, detail);
+        problemDetail.setType(URI.create(PROBLEM_PATH + ProblemType.CONSTRAINTS.getValue()));
+        problemDetail.setInstance(URI.create(request.getRequestURL().toString()));
+
+        return problemDetail;
     }
 
     @ExceptionHandler
