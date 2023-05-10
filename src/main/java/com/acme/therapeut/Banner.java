@@ -99,7 +99,7 @@ final class Banner {
 
     private static String getFiglet() {
         try {
-            return FigletFont.convertOneLine("kunde v1");
+            return FigletFont.convertOneLine("therapeut");
         } catch (final IOException ex) {
             throw new IllegalArgumentException(ex);
         }
