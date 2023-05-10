@@ -19,8 +19,11 @@ package com.acme.therapeut;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 
 import static com.acme.therapeut.Banner.TEXT;
+import static org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType.HAL;
+import static org.springframework.hateoas.support.WebStack.WEBMVC;
 
 /**
  * Klasse mit der main-Methode für die Anwendung auf Basis von Spring Boot.
@@ -30,6 +33,7 @@ import static com.acme.therapeut.Banner.TEXT;
 @SpringBootApplication(proxyBeanMethods = false)
 @Import(ApplicationConfig.class)
 @SuppressWarnings({"ImplicitSubclassInspection", "ClassUnconnectedToPackage"})
+@EnableHypermediaSupport(type = HAL, stacks = WEBMVC)
 public final class Application {
     private Application() {
     }

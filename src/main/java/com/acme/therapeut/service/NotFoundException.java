@@ -27,6 +27,11 @@ public final class NotFoundException extends RuntimeException {
         suchkriterien = null;
     }
 
+    NotFoundException(final Map<String, List<String>> suchkriterien) {
+        super("Keine Therapeuten gefunden.");
+        id = null;
+        this.suchkriterien = suchkriterien;
+    }
 
     NotFoundException() {
         super("Keine Therapeuten gefunden.");

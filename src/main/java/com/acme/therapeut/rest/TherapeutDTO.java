@@ -20,7 +20,7 @@ import java.util.List;
  * @param geburtsdatum Das Geburtsdatum eines Therapeuten.
  * @param geschlecht Das Geschlecht eines Therapeuten.
  * @param adresse Die Adresse eines Therapeuten.
- * @param taetigkeitsbereiche Die Interessen eines Therapeuten.
+ * @param taetigkeitsbereiche Die Taetigkeitsbereiche eines Therapeuten.
  */
 @SuppressWarnings("RecordComponentNumber")
 record TherapeutDTO(

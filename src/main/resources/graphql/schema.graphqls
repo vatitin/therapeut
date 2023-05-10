@@ -1,0 +1,92 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"Suche nach Therapeutendaten"
+type Query {
+  "Suche Therapeutendaten anhand der ID"
+  therapeut(id: ID!): Therapeut
+
+  "Suche Therapeutendaten anhand des Nachnamens oder der Emailadresse"
+  therapeuten(input: Suchkriterien): [Therapeut!]
+}
+
+type Mutation {
+  "Einen neuen Therapeutendatensatz anlegen"
+  create(input: TherapeutInput!): CreatePayload
+}
+
+"Eigenschaften eines Therapeut-Datensatzes mit untergeordneten Eigenschaften"
+type Therapeut {
+  "ID des Therapeuten"
+  id: ID
+  "Nachname des Therapeuten"
+  nachname: String!
+  "Vorname des Therapeuten"
+  vorname: String!
+  email: String!
+  geburtsdatum: String
+  geschlecht: String
+  adresse: Adresse!
+  taetigkeitsbereiche: [String!]
+}
+
+type Adresse {
+  "Postleitzahl der Adresse"
+  plz: String!
+  "Ortsangabe"
+  ort: String!
+}
+
+"Suchkriterien für die Query 'therapeuten'"
+input Suchkriterien {
+  "Nachname der gesuchten Therapeuten"
+  nachname: String
+  "Emailadresse der gesuchten Therapeuten"
+  email: String
+}
+
+"Eingabedaten für einen neuen Therapeuten"
+input TherapeutInput {
+  "Nachname des neuen Therapeuten"
+  nachname: String!
+  "Vorname des neuen Therapeuten"
+  vorname: String!
+  "Emailadresse des neuen Therapeuten"
+  email: String!
+  "Geburtsdatum des neuen Therapeuten"
+  geburtsdatum: String
+  "Geschlecht des neuen Therapeuten: MAENNLICH, WEIBLICH, DIVERS"
+  geschlecht: Geschlecht
+  "Taetigkeitsbereiche des neuen Therapeuten: PHYSIO, MASSAGE, DIAET"
+  taetigkeitsbereiche: [Taetigkeitsbereich!]
+  "Adresse des neuen Therapeuten"
+  adresse: AdresseInput!
+}
+
+"Aufzählungstyp für das Geschlecht eines Therapeuten"
+enum Geschlecht {
+  WEIBLICH
+  MAENNLICH
+  DIVERS
+}
+
+"Aufzählungstyp für die Taetigkeitsbereiche eines Therapeuten"
+enum Taetigkeitsbereich {
+  PHYSIO
+  MASSAGE
+  DIAET
+}
+
+"Neue oder geänderte Adresse"
+input AdresseInput {
+  plz: String!
+  ort: String!
+}
+
+"Rückgabetyp beim Neuanlegen eines Therapeuten"
+type CreatePayload {
+  "ID des neu angelegten Therapeuten"
+  id: String!
+}
