@@ -1,0 +1,379 @@
+openapi: 3.0.1
+info:
+  title: Therapeut API
+  version: v1
+servers:
+- url: https://localhost:8080
+  description: Generated server url
+paths:
+  /rest/{id}:
+    get:
+      tags:
+      - Suchen
+      summary: Suche mit der Therapeut-ID
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "404":
+          description: Therapeut nicht gefunden
+        "200":
+          description: Therapeut gefunden
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/TherapeutModel'
+    put:
+      tags:
+      - Aktualisieren
+      summary: Einen Therapeuten mit neuen Werten aktualisieren
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TherapeutDTO'
+        required: true
+      responses:
+        "404":
+          description: Therapeut nicht vorhanden
+        "422":
+          description: Ungültige Werte oder Email vorhanden
+        "400":
+          description: Syntaktische Fehler im Request-Body
+        "204":
+          description: Aktualisiert
+    delete:
+      tags:
+      - Loeschen
+      summary: Einen Therapeuten anhand der ID loeschen
+      operationId: deleteById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "404":
+          description: Not Found
+        "204":
+          description: Gelöscht
+    patch:
+      tags:
+      - Aktualisieren
+      summary: Einen Therapeuten mit einzelnen neuen Werten aktualisieren
+      operationId: patch
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PatchOperation'
+        required: true
+      responses:
+        "404":
+          description: Therapeut nicht vorhanden
+        "422":
+          description: Constraints verletzt oder Email vorhanden
+        "400":
+          description: Syntaktische Fehler im Request-Body
+        "204":
+          description: Aktualisiert
+  /rest:
+    get:
+      tags:
+      - Suchen
+      summary: Suche mit Suchkriterien
+      operationId: find
+      parameters:
+      - name: suchkriterien
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/MultiValueMapStringString'
+      responses:
+        "404":
+          description: Keine Therapeuten gefunden
+        "200":
+          description: CollectionModel mid den Therapeuten
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelTherapeutModel'
+    post:
+      tags:
+      - Neuanlegen
+      summary: Einen neuen Therapeuten anlegen
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TherapeutDTO'
+        required: true
+      responses:
+        "404":
+          description: Not Found
+        "422":
+          description: Ungültige Werte oder Email vorhanden
+        "201":
+          description: Therapeut neu angelegt
+        "400":
+          description: Syntaktische Fehler im Request-Body
+  /rest/nachname/{prefix}:
+    get:
+      tags:
+      - Suchen
+      summary: Suche Nachnamen mit Praefix
+      operationId: findNachnamenByPrefix
+      parameters:
+      - name: prefix
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    AdresseDTO:
+      type: object
+      properties:
+        plz:
+          type: string
+        ort:
+          type: string
+    TherapeutDTO:
+      type: object
+      properties:
+        nachname:
+          type: string
+        email:
+          type: string
+        kategorie:
+          type: integer
+          format: int32
+        hasNewsletter:
+          type: boolean
+        geburtsdatum:
+          type: string
+          format: date
+        homepage:
+          type: string
+          format: url
+        geschlecht:
+          type: string
+          enum:
+          - M
+          - W
+          - D
+        familienstand:
+          type: string
+          enum:
+          - L
+          - VH
+          - G
+          - VW
+        interessen:
+          type: array
+          items:
+            type: string
+            enum:
+            - S
+            - L
+            - R
+        umsatz:
+          $ref: '#/components/schemas/UmsatzDTO'
+        adresse:
+          $ref: '#/components/schemas/AdresseDTO'
+    UmsatzDTO:
+      type: object
+      properties:
+        betrag:
+          type: number
+        waehrung:
+          type: object
+          properties:
+            currencyCode:
+              type: string
+            defaultFractionDigits:
+              type: integer
+              format: int32
+            numericCode:
+              type: integer
+              format: int32
+            displayName:
+              type: string
+            symbol:
+              type: string
+            numericCodeAsString:
+              type: string
+    PatchOperation:
+      type: object
+      properties:
+        op:
+          type: string
+          enum:
+          - replace
+          - add
+          - remove
+        path:
+          type: string
+        value:
+          type: string
+    MultiValueMapStringString:
+      type: object
+      properties:
+        all:
+          type: object
+          additionalProperties:
+            type: string
+          writeOnly: true
+        empty:
+          type: boolean
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    Adresse:
+      required:
+      - ort
+      - plz
+      type: object
+      properties:
+        plz:
+          pattern: "^\\d{5}$"
+          type: string
+        ort:
+          type: string
+    CollectionModelTherapeutModel:
+      type: object
+      properties:
+        _embedded:
+          type: object
+          properties:
+            Therapeuten:
+              type: array
+              items:
+                $ref: '#/components/schemas/TherapeutModel'
+        _links:
+          $ref: '#/components/schemas/Links'
+    TherapeutModel:
+      type: object
+      properties:
+        nachname:
+          type: string
+        email:
+          type: string
+        kategorie:
+          type: integer
+          format: int32
+        hasNewsletter:
+          type: boolean
+        geburtsdatum:
+          type: string
+          format: date
+        homepage:
+          type: string
+          format: url
+        geschlecht:
+          type: string
+          enum:
+          - M
+          - W
+          - D
+        familienstand:
+          type: string
+          enum:
+          - L
+          - VH
+          - G
+          - VW
+        interessen:
+          type: array
+          items:
+            type: string
+            enum:
+            - S
+            - L
+            - R
+        umsatz:
+          $ref: '#/components/schemas/Umsatz'
+        adresse:
+          $ref: '#/components/schemas/Adresse'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Link'
+    Umsatz:
+      type: object
+      properties:
+        betrag:
+          type: number
+        waehrung:
+          type: object
+          properties:
+            currencyCode:
+              type: string
+            defaultFractionDigits:
+              type: integer
+              format: int32
+            numericCode:
+              type: integer
+              format: int32
+            displayName:
+              type: string
+            symbol:
+              type: string
+            numericCodeAsString:
+              type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean
