@@ -60,6 +60,31 @@ public class TherapeutGetController {
 
     private final UriHelper uriHelper;
 
+    @GetMapping(path = "{id:" + ID_PATTERN + "}", produces = HAL_JSON_VALUE)
+    @Operation(summary = "Suche mit der Therapeut-ID", tags = "Suchen")
+    @ApiResponse(responseCode = "200", description = "Therapeut gefunden")
+    @ApiResponse(responseCode = "404", description = "Therapeut nicht gefunden")
+    TherapeutModel findById(@PathVariable final UUID id, final HttpServletRequest request) {
+        log.debug("findById: id={}", id);
+        log.debug("findById: Thread={}", Thread.currentThread().getName());
+
+        // Geschaeftslogik
+        final var therapeut = service.findById(id);
+
+        // HATEOAS
+        final var model = new TherapeutModel(therapeut);
+        final var baseUri = uriHelper.getBaseUri(request).toString();
+        final var idUri = baseUri + '/' + therapeut.getId();
+        final var selfLink = Link.of(idUri);
+        final var listLink = Link.of(baseUri, LinkRelation.of("list"));
+        final var addLink = Link.of(baseUri, LinkRelation.of("add"));
+        final var updateLink = Link.of(idUri, LinkRelation.of("update"));
+        final var removeLink = Link.of(idUri, LinkRelation.of("remove"));
+        model.add(selfLink, listLink, addLink, updateLink, removeLink);
+
+        log.debug("findById: {}", model);
+        return model;
+    }
 
     /**
      * Finde alle Therapeuten.
