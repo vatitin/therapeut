@@ -1,0 +1,78 @@
+@startuml TherapeutGetController
+
+skinparam classAttributeIconSize 0
+
+package org.springframework {
+    package web.bind.annotation {
+        interface "@RestController" as RestController
+        interface "@RequestMapping" as RequestMapping
+        interface "@PathVariable" as PathVariable
+        interface "@RequestParam" as RequestParam
+        interface "@ExceptionHandler" as ExceptionHandler
+        interface "@ResponseStatus" as ResponseStatus
+    }
+
+    package http {
+        class ResponseEntity<T>
+    }
+    package hateoas {
+        class CollectionModel<E>
+    }
+    package util {
+        class MultiValueMap<K,V>
+    }
+}
+
+package jakarta.servlet.http {
+    interface HttpServletRequest
+}
+
+package java.util {
+    class UUID
+    UUID .up[hidden].> HttpServletRequest
+}
+
+package com.acme.therapeut {
+    package service {
+        class TherapeutReadService << control >> << @Service >>
+        class NotFoundException
+    }
+
+    package rest #DDDDDD {
+        class TherapeutModel <<entity>>
+
+        class TherapeutGetController << boundary >> << @RestController >> << @RequestMapping >> {
+            + @GetMapping findById(@PathVariable id: UUID, request: HttpServletRequest): TherapeutModel
+            + @GetMapping find(@RequestParam queryParams: MultiValueMap<String, String>, request: HttpServletRequest): CollectionModel<TherapeutModel>
+        }
+
+        class CommonExceptionHandler << @ControllerAdvice >> {
+            + @ExceptionHandler @ResponseStatus onNotFound(ex: NotFoundException)
+        }
+
+        TherapeutGetController o--> "1" TherapeutReadService : service
+        TherapeutGetController ..> TherapeutModel
+
+        TherapeutGetController .up.> RestController
+        TherapeutGetController .up.> RequestMapping
+        TherapeutGetController .up.> PathVariable
+        TherapeutGetController .up.> RequestParam
+        TherapeutGetController .up.> ResponseEntity
+        TherapeutGetController .up.> MultiValueMap
+        TherapeutGetController .up.> CollectionModel
+        TherapeutGetController .right.> HttpServletRequest
+
+        CommonExceptionHandler .up.> ExceptionHandler
+        CommonExceptionHandler .up.> ResponseStatus
+        CommonExceptionHandler ..> NotFoundException
+        CommonExceptionHandler .up[hidden].> TherapeutModel
+
+        TherapeutGetController .right.> UUID
+
+        TherapeutModel .[hidden].> TherapeutReadService
+    }
+}
+
+hide empty members
+
+@enduml

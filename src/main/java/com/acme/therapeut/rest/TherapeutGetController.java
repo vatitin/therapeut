@@ -29,6 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 /**
  * Eine @RestController-Klasse bildet die REST-Schnittstelle, wobei die HTTP-Methoden, Pfade und MIME-Typen auf die
  * Methoden der Klasse abgebildet werden.
+ * <img src="../../../../../asciidoc/TherapeutGetController.svg" alt="Klassendiagramm">
  *
  * @author Valentin Sackmann
  */

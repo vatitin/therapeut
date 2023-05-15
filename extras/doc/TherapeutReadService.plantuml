@@ -1,0 +1,45 @@
+@startuml TherapeutReadService
+
+skinparam classAttributeIconSize 0
+
+package org.springframework.stereotype {
+    interface Service
+}
+
+package java.util {
+    interface List<T>
+    interface Map<K,V>
+    class UUID
+
+    UUID .left[hidden].> Service
+}
+
+package com.acme.therapeut {
+    package entity {
+        class Therapeut << entity >>
+
+        Therapeut .up[hidden].> List
+    }
+
+    package repository {
+        class TherapeutRepository << control >> << @Repository >>
+    }
+
+    package service #DDDDDD {
+        class TherapeutReadService << control >> << @Service >> {
+            + findById(id: UUID): Therapeut
+            + find(queryParams: Map<String, String>): List<Therapeut>
+        }
+
+        TherapeutReadService o--> TherapeutRepository : repo
+        TherapeutReadService .right.> Therapeut
+        TherapeutReadService .up.> Service
+        TherapeutReadService .up.> UUID
+        TherapeutReadService .up> List
+        TherapeutReadService .up.> Map
+    }
+}
+
+hide empty members
+
+@enduml

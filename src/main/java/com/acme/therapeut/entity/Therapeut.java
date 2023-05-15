@@ -18,6 +18,7 @@ import java.util.UUID;
 
 /**
  * Daten eines Therapeuten.
+ * <img src="../../../../../asciidoc/Therapeut.svg" alt="Klassendiagramm">
  *
  * @author Valentin Sackmann
  */

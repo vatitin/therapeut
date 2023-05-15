@@ -1,0 +1,61 @@
+@startuml Therapeut
+
+skinparam classAttributeIconSize 0
+' skinparam monochrome true
+
+package java {
+    package util {
+        class UUID
+        interface List<T>
+    }
+
+    package time {
+        class LocalDate
+    }
+
+    UUID .[hidden].> LocalDate
+}
+
+package com.acme.therapeut.entity #DDDDDD {
+
+    class Adresse {
+        plz: String
+        ort: String
+    }
+
+    enum GeschlechtType {
+        MAENNLICH
+        WEIBLICH
+        DIVERS
+    }
+
+
+    enum TaetigkeitsbereichType {
+        PHYSIO
+        MASSAGE
+        DIAET
+    }
+
+    class Therapeut << entity >> {
+        id : UUID
+        nachname : String
+        vorname : String
+        email : String
+        geburtsdatum: LocalDate
+        geschlecht: GeschlechtType
+        taetigkeitsbereiche: List<TaetigkeitsbereichType>
+    }
+
+    Therapeut *--> "1" Adresse : adresse
+    Therapeut .up.> GeschlechtType
+    Therapeut .up.> TaetigkeitsbereichType
+
+    Therapeut ..> UUID
+    Therapeut ..> LocalDate
+    Therapeut ..> List
+
+}
+
+hide empty members
+
+@enduml

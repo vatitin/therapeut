@@ -14,6 +14,7 @@ import java.util.UUID;
 
 /**
  * Anwendungslogik für Therapeuten.
+ * <img src="../../../../../asciidoc/TherapeutReadService.svg" alt="Klassendiagramm">
  *
  * @author Valentin Sackmann
  */
