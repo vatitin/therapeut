@@ -50,12 +50,11 @@ mutation {
       email: "email@"
       geburtsdatum: "2001-01-01"
       geschlecht: WEIBLICH
-      familienstand: LEDIG
       adresse: {
         plz: "1234"
         ort: ""
       }
-      interessen: [PHYSIO, PHYSIO]
+      taetigkeitsbereiche: [PHYSIO, PHYSIO]
     }
   ) {
     id
@@ -95,15 +94,15 @@ mutation {
   create(
     input: {
       nachname: "Graphql"
+      vorname: "Graphql"
       email: "max-mustermann@acme.com"
       geburtsdatum: "2022-02-01"
       geschlecht: WEIBLICH
-      familienstand: LEDIG
       adresse: {
         plz: "99999"
         ort: "Graphqlort"
       }
-      interessen: [PHYSIO, MASSAGE]
+      taetigkeitsbereiche: [PHYSIO, MASSAGE]
     }
   ) {
     id

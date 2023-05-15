@@ -124,7 +124,8 @@ public class TherapeutRepository {
         final var therapeuten = THERAPEUTEN.stream()
             .filter(therapeut -> {
                 @SuppressWarnings("SetReplaceableByEnumSet")
-                final Collection<TaetigkeitsbereichType> therapeutTaetigkeitsbereiche = new HashSet<>(therapeut.getTaetigkeitsbereiche());
+                final Collection<TaetigkeitsbereichType> therapeutTaetigkeitsbereiche = new HashSet<>(therapeut
+                    .getTaetigkeitsbereiche());
                 return therapeutTaetigkeitsbereiche.containsAll(taetigkeitsbereiche);
             })
             .toList();

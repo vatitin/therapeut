@@ -19,6 +19,7 @@ package com.acme.therapeut.rest;
 import com.acme.therapeut.service.ConstraintViolationsException;
 import com.acme.therapeut.service.EmailExistsException;
 import com.acme.therapeut.service.TherapeutWriteService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +71,7 @@ class TherapeutWriteController {
      *      vorliegen.
      */
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Einen neuen Therapeuten anlegen", tags = "Neuanlegen")
     @ApiResponse(responseCode = "201", description = "Therapeut neu angelegt")
     @ApiResponse(responseCode = "422", description = "Email vorhanden")
     @SuppressWarnings("TrailingComment")
@@ -90,6 +92,11 @@ class TherapeutWriteController {
      */
     @PutMapping(path = "{id}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(NO_CONTENT)
+    @Operation(summary = "Einen Therapeuten mit neuen Werten aktualisieren", tags = "Aktualisieren")
+    @ApiResponse(responseCode = "204", description = "Aktualisiert")
+    @ApiResponse(responseCode = "400", description = "Syntaktische Fehler im Request-Body")
+    @ApiResponse(responseCode = "404", description = "Therapeut nicht vorhanden")
+    @ApiResponse(responseCode = "422", description = "Ungültige Werte oder Email vorhanden")
     void update(@PathVariable final UUID id, @RequestBody final TherapeutDTO therapeutDTO
     ) {
         log.debug("update: id={}, {}", id, therapeutDTO);
