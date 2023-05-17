@@ -74,7 +74,6 @@ public class Therapeut {
     @Past
     private LocalDate geburtsdatum;
 
-
     /**
      * Das Geschlecht des Therapeuten.
      */
@@ -87,13 +86,10 @@ public class Therapeut {
     @ToString.Exclude
     private Adresse adresse;
 
-
     /**
      * Die Taetigkeitsbereiche des Therapeuten.
      */
     @UniqueElements
     @ToString.Exclude
     private List<TaetigkeitsbereichType> taetigkeitsbereiche;
-
-
 }

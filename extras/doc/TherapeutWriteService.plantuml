@@ -1,0 +1,37 @@
+@startuml TherapeutWriteService
+
+skinparam classAttributeIconSize 0
+
+package org.springframework.stereotype {
+    interface Service
+}
+
+package java.util {
+    class UUID
+}
+
+package com.acme.therapeut {
+    package entity {
+        class Therapeut << entity >>
+    }
+
+    package repository {
+        class TherapeutRepository << control >> << @Repository >>
+    }
+
+    package service #DDDDDD {
+        class TherapeutWriteService << control >> << @Service >> {
+            + create(therapeut: Therapeut): Therapeut
+            + update(therapeut: Therapeut, id: UUID)
+        }
+
+        TherapeutWriteService o--> "1" TherapeutRepository : repo
+        TherapeutWriteService .right.> Therapeut
+        TherapeutWriteService .up.> Service
+        TherapeutWriteService .up.> UUID
+    }
+}
+
+hide empty members
+
+@enduml

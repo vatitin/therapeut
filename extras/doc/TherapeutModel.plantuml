@@ -1,0 +1,56 @@
+@startuml Therapeut
+
+skinparam classAttributeIconSize 0
+' skinparam monochrome true
+
+package java {
+    package util {
+        interface List<T>
+    }
+
+    package time {
+        class LocalDate
+
+        LocalDate .right[hidden].> List
+    }
+}
+
+package org.springframework.hateoas {
+    class RepresentationModel<T>
+}
+
+package com.acme.therapeut {
+    package entity {
+        class Therapeut
+        class Adresse
+        enum GeschlechtType
+        enum TaetigkeitsbereichType
+    }
+
+    package rest #DDDDDD {
+        class TherapeutModel << entity >> {
+            nachname : String
+            vorname : String
+            email : String
+            geburtsdatum: LocalDate
+            geschlecht: GeschlechtType
+            taetigkeitsbereiche: List<TaetigkeitsbereichType>
+
+            TherapeutModel(therapeut: Therapeut)
+        }
+
+        TherapeutModel *--> "1" Adresse : adresse
+        TherapeutModel ..> GeschlechtType
+        TherapeutModel ..> TaetigkeitsbereichType
+        TherapeutModel -up-|> RepresentationModel
+
+        TherapeutModel ..> Therapeut
+
+        TherapeutModel .up.> LocalDate
+        TherapeutModel .up.> List
+    }
+}
+
+hide empty members
+
+@enduml
