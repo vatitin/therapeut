@@ -1,7 +1,7 @@
 {
     "nachname": "Nachnamerest",
     "vorname": "Vornamerest",
-    "email": "rest@rest1.de",
+    "email": "rest@rest-put.de",
     "geburtsdatum": "2002-02-02",
     "geschlecht": "W",
     "adresse": {
