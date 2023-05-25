@@ -749,7 +749,7 @@ tasks.javadoc {
         addStringOption("Xdoclint:none", "-quiet")
         // https://stackoverflow.com/questions/59485464/javadoc-and-enable-preview
         addBooleanOption("-enable-preview", true)
-        addStringOption("-release", "19")
+        addStringOption("-release", "20")
 
         this as StandardJavadocDocletOptions
         author(true)
