@@ -38,11 +38,11 @@ server:
 
 spring:
   aop.proxy-target-class: false
-  application.name: kunde
+  application.name: therapeut
   datasource:
-    url: jdbc:postgresql://localhost/kunde
-    username: kunde
-    password: Change Me!
+    url: jdbc:postgresql://localhost/therapeut
+    username: therapeut
+    password: p
   flyway:
     locations: classpath:db/migration/{vendor}
     create-schemas: false
