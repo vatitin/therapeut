@@ -1,8 +1,16 @@
 package com.acme.therapeut.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -10,9 +18,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,6 +36,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.acme.therapeut.entity.Therapeut.ADRESSE_GRAPH;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Collections.emptyList;
 
 /**
@@ -34,12 +49,30 @@ import static java.util.Collections.emptyList;
  *
  * @author Valentin Sackmann
  */
-@Builder
+@Entity
+@Table(name = "therapeut")
+@NamedEntityGraph(name = ADRESSE_GRAPH, attributeNodes = @NamedAttributeNode("adresse"))
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Getter
 @Setter
 @ToString
+@Builder
+@SuppressWarnings({
+    "ClassFanOutComplexity",
+    "RequireEmptyLineBeforeBlockTagGroup",
+    "DeclarationOrder",
+    "MagicNumber",
+    "JavadocDeclaration",
+    "MissingSummary",
+    "RedundantSuppression"})
 public class Therapeut {
+
+    /**
+     * NamedEntityGraph für das Attribut "adresse".
+     */
+    public static final String ADRESSE_GRAPH = "Therapeut.adresse";
 
     /**
      * Muster für einen gültigen Nachnamen.
@@ -56,6 +89,8 @@ public class Therapeut {
     /**
      * Die ID des Therapeuten.
      */
+    @Id
+    @GeneratedValue
     @EqualsAndHashCode.Include
     private UUID id;
 
@@ -64,11 +99,13 @@ public class Therapeut {
      */
     @NotNull
     @Pattern(regexp = NACHNAME_PATTERN)
+    @Size(max = 40)
     private String nachname;
 
     /**
      * Der Vorname des Therapeuten.
      */
+    @Size(max = 40)
     @NotNull
     @Pattern(regexp = VORNAME_PATTERN)
     private String vorname;
@@ -78,6 +115,7 @@ public class Therapeut {
      */
     @Email
     @NotNull
+    @Size(max = 20)
     private String email;
 
     /**
@@ -89,11 +127,13 @@ public class Therapeut {
     /**
      * Das Geschlecht des Therapeuten.
      */
+    @Enumerated(STRING)
     private GeschlechtType geschlecht;
 
     /**
      * Die Adresse des Therapeuten.
      */
+    @OneToOne(mappedBy = "therapeut", optional = false, cascade = {PERSIST, REMOVE}, fetch = LAZY, orphanRemoval = true)
     @Valid
     @ToString.Exclude
     private Adresse adresse;
@@ -108,14 +148,25 @@ public class Therapeut {
     @Column(name = "taetigkeitsbereiche")
     private String taetigkeitsbereicheStr;
 
-    @Size(max = 20)
-    private String username;
 
     @CreationTimestamp
     private LocalDateTime erzeugt;
 
     @UpdateTimestamp
     private LocalDateTime aktualisiert;
+
+    /**
+     * Therapeutendaten überschreiben.
+     *
+     * @param therapeut Neue Therapeutendaten.
+     */
+    public void set(final Therapeut therapeut) {
+        nachname = therapeut.nachname;
+        vorname = therapeut.vorname;
+        email = therapeut.email;
+        geburtsdatum = therapeut.geburtsdatum;
+        geschlecht = therapeut.geschlecht;
+    }
 
     @PrePersist
     private void buildTaetigkeitsbereicheStr() {
@@ -131,7 +182,7 @@ public class Therapeut {
     }
 
     @PostLoad
-    private void loadInteressen() {
+    private void loadTaetigkeitsbereiche() {
         if (taetigkeitsbereicheStr == null) {
             // NULL in der DB-Spalte
             taetigkeitsbereiche = emptyList();

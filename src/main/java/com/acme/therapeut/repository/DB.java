@@ -16,21 +16,6 @@
  */
 package com.acme.therapeut.repository;
 
-import com.acme.therapeut.entity.Adresse;
-import com.acme.therapeut.entity.Therapeut;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.acme.therapeut.entity.GeschlechtType.DIVERS;
-import static com.acme.therapeut.entity.GeschlechtType.MAENNLICH;
-import static com.acme.therapeut.entity.GeschlechtType.WEIBLICH;
-import static com.acme.therapeut.entity.TaetigkeitsbereichType.MASSAGE;
-import static com.acme.therapeut.entity.TaetigkeitsbereichType.PHYSIO;
-
 /**
  * Emulation der Datenbasis für persistente Therapeuten.
  */
@@ -39,6 +24,7 @@ final class DB {
     /**
      * Liste der Therapeuten zur Emulation der DB.
      */
+    /*
     @SuppressWarnings("StaticCollection")
     static final List<Therapeut> THERAPEUTEN = getTherapeuten();
 
@@ -100,5 +86,7 @@ final class DB {
 
         return therapeuten;
     }
+
+     */
 
 }

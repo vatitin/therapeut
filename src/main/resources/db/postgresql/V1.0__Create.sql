@@ -14,11 +14,12 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -- docker compose exec postgres bash
--- psql --dbname=therapeut --username=therapeut [--file=/sql/V1.0__Create.sql]
+-- psql --dbname=therapeut --username=therapeut --file=/sql/V1.0__Create.sql
 
 -- https://www.postgresql.org/docs/current/sql-createtable.html
 -- https://www.postgresql.org/docs/current/datatype.html
 -- BEACHTE: user ist ein Schluesselwort
+/*
 CREATE TABLE IF NOT EXISTS login (
              -- https://www.postgresql.org/docs/current/datatype-uuid.html
              -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-PRIMARY-KEYS
@@ -28,6 +29,7 @@ CREATE TABLE IF NOT EXISTS login (
     password varchar(180) NOT NULL,
     rollen   varchar(32)
 ) TABLESPACE therapeutspace;
+ */
 
 -- https://www.postgresql.org/docs/current/sql-createtype.html
 -- https://www.postgresql.org/docs/current/datatype-enum.html
@@ -44,10 +46,11 @@ CREATE TABLE IF NOT EXISTS therapeut (
     email         varchar(40) NOT NULL UNIQUE USING INDEX TABLESPACE therapeutspace,
                   -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS
                   -- https://www.postgresql.org/docs/current/datatype-datetime.html
-    geburtsdatum  date CHECK (geburtsdatum < current_date),
+  geschlecht    varchar(9) CHECK (geschlecht ~ 'MAENNLICH|WEIBLICH|DIVERS'),
+  geburtsdatum  date CHECK (geburtsdatum < current_date),
     taetigkeitsbereiche    varchar(32),
                   -- https://www.postgresql.org/docs/current/datatype-datetime.html
-    erzeugt       timestamp NOT NULL,
+  erzeugt       timestamp NOT NULL,
     aktualisiert  timestamp NOT NULL
 ) TABLESPACE therapeutspace;
 

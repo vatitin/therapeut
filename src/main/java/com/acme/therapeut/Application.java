@@ -16,6 +16,7 @@
  */
 package com.acme.therapeut;
 
+import com.acme.therapeut.dev.DevConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -31,7 +32,7 @@ import static org.springframework.hateoas.support.WebStack.WEBMVC;
  * @author <a href="mailto:Juergen.Zimmermann@h-ka.de">Jürgen Zimmermann</a>
  */
 @SpringBootApplication(proxyBeanMethods = false)
-@Import(ApplicationConfig.class)
+@Import({ApplicationConfig.class, DevConfig.class})
 @SuppressWarnings({"ImplicitSubclassInspection", "ClassUnconnectedToPackage"})
 @EnableHypermediaSupport(type = HAL, stacks = WEBMVC)
 public final class Application {

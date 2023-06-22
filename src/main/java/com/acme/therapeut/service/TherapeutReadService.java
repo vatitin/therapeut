@@ -1,6 +1,7 @@
 package com.acme.therapeut.service;
 
 import com.acme.therapeut.entity.Therapeut;
+import com.acme.therapeut.repository.PredicateBuilder;
 import com.acme.therapeut.repository.TherapeutRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public final class TherapeutReadService {
 
     private final TherapeutRepository repo;
+    private final PredicateBuilder predicateBuilder;
 
     /**
      * Alle Therapeuten suchen.
@@ -84,7 +86,10 @@ public final class TherapeutReadService {
             }
         }
 
-        final var therapeuten = repo.find(suchkriterien);
+        final var predicate = predicateBuilder
+            .build(suchkriterien)
+            .orElseThrow(() -> new NotFoundException(suchkriterien));
+        final var therapeuten = repo.findAll(predicate);
         if (therapeuten.isEmpty()) {
             throw new NotFoundException(suchkriterien);
         }

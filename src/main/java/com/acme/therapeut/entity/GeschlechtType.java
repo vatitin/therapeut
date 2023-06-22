@@ -2,6 +2,9 @@ package com.acme.therapeut.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 /**
  * Enum für Geschlecht.
  *
@@ -40,4 +43,15 @@ public enum GeschlechtType {
         return value;
     }
 
+    /**
+     * Konvertierung eines Strings in einen Enum-Wert.
+     *
+     * @param value Der String, zu dem ein passender Enum-Wert ermittelt werden soll.
+     * @return Passender Enum-Wert oder null.
+     */
+    public static Optional<GeschlechtType> of(final String value) {
+        return Stream.of(values())
+            .filter(geschlecht -> geschlecht.value.equalsIgnoreCase(value))
+            .findFirst();
+    }
 }

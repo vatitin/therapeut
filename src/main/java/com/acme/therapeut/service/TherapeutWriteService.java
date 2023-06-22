@@ -6,6 +6,7 @@ import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -17,9 +18,10 @@ import java.util.UUID;
  * @author Valentin Sackmann
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public final class TherapeutWriteService {
+public class TherapeutWriteService {
     private final TherapeutRepository repo;
 
     private final Validator validator;
@@ -31,6 +33,7 @@ public final class TherapeutWriteService {
      * @return Der neu angelegte Therapeut mit generierter ID
      * @throws EmailExistsException Es gibt bereits einen Therapeutn mit der Emailadresse.
      */
+    @Transactional
     public Therapeut create(final Therapeut therapeut) {
         log.debug("create: {}", therapeut);
 
@@ -40,11 +43,11 @@ public final class TherapeutWriteService {
             throw new ConstraintViolationsException(violations);
         }
 
-        if (repo.isEmailExisting(therapeut.getEmail())) {
+        if (repo.existsByEmail(therapeut.getEmail())) {
             throw new EmailExistsException(therapeut.getEmail());
         }
 
-        final var therapeutDB = repo.create(therapeut);
+        final var therapeutDB = repo.save(therapeut);
         log.debug("create: {}", therapeutDB);
         return therapeutDB;
     }
@@ -58,7 +61,7 @@ public final class TherapeutWriteService {
      * @throws NotFoundException Kein Therapeut zur ID vorhanden.
      * @throws EmailExistsException Es gibt bereits einen Therapeuten mit der Emailadresse.
      */
-    public void update(final Therapeut therapeut, final UUID id) {
+    public Therapeut update(final Therapeut therapeut, final UUID id) {
         log.debug("update: {}", therapeut);
         log.debug("update: id={}", id);
 
@@ -76,12 +79,13 @@ public final class TherapeutWriteService {
         final var email = therapeut.getEmail();
         final var therapeutDB = therapeutDbOptional.get();
         // Ist die neue Email bei einem *ANDEREN* Therapeuten vorhanden?
-        if (!Objects.equals(email, therapeutDB.getEmail()) && repo.isEmailExisting(email)) {
+        if (!Objects.equals(email, therapeutDB.getEmail()) && repo.existsByEmail(email)) {
             log.debug("update: email {} existiert", email);
             throw new EmailExistsException(email);
         }
 
-        therapeut.setId(id);
-        repo.update(therapeut);
+        therapeutDB.set(therapeut);
+        repo.save(therapeut);
+        return therapeutDB;
     }
 }
