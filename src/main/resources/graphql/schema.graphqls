@@ -25,6 +25,7 @@ type Therapeut {
   nachname: String!
   "Vorname des Therapeuten"
   vorname: String!
+  mitglied_id: String
   email: String!
   geburtsdatum: String
   geschlecht: String
@@ -63,6 +64,7 @@ input TherapeutInput {
   taetigkeitsbereiche: [Taetigkeitsbereich!]
   "Adresse des neuen Therapeuten"
   adresse: AdresseInput!
+  mitglied_id: String
 }
 
 "Aufzählungstyp für das Geschlecht eines Therapeuten"

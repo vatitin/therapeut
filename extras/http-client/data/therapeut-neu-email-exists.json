@@ -3,6 +3,7 @@
   "vorname": "Vornamerest",
   "email": "max-mustermann@acme.com",
   "geburtsdatum": "2002-02-02",
+  "mitglied_id": "00000000-0000-0000-0000-000000000001",
   "geschlecht": "W",
   "adresse": {
     "plz": "99999",

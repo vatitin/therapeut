@@ -4,6 +4,7 @@
     "email": "rest@rest1.de",
     "geburtsdatum": "2002-02-02",
     "geschlecht": "W",
+    "mitglied_id": "00000000-0000-0000-0000-000000000001",
     "adresse": {
         "plz": "99999",
         "ort": "Restort"

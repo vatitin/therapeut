@@ -12,6 +12,7 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -138,6 +139,12 @@ public class Therapeut {
     @ToString.Exclude
     private Adresse adresse;
 
+    @Column(name = "mitglied")
+    private UUID mitgliedId;
+
+    @Version
+    public int version;
+
     /**
      * Die Taetigkeitsbereiche des Therapeuten.
      */
@@ -148,6 +155,11 @@ public class Therapeut {
     @Column(name = "taetigkeitsbereiche")
     private String taetigkeitsbereicheStr;
 
+    @Transient
+    private String mitgliedNachname;
+
+    @Transient
+    private String mitgliedVorname;
 
     @CreationTimestamp
     private LocalDateTime erzeugt;

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.LinkRelation;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.acme.therapeut.rest.TherapeutGetController.REST_PATH;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * Eine @RestController-Klasse bildet die REST-Schnittstelle, wobei die HTTP-Methoden, Pfade und MIME-Typen auf die
@@ -128,5 +132,55 @@ public class TherapeutGetController {
 
         log.debug("find: {}", models);
         return CollectionModel.of(models);
+    }
+
+    /**
+     * Suche mit diversen Suchkriterien als Query-Parameter. Es wird eine Collection zurückgeliefert, damit auch der
+     * Statuscode 204 möglich ist.
+     *
+     * @param queryParams Query-Parameter als Map.
+     * @param request Das Request-Objekt, um Links für HATEOAS zu erstellen.
+     * @return Ein Response mit dem Statuscode 200 und einer Collection mit den gefundenen Bestellungen einschließlich
+     *      Atom-Links, oder aber Statuscode 204.
+     */
+    @GetMapping(produces = HAL_JSON_VALUE)
+    @Operation(summary = "Suche mit Suchkriterien", tags = "Suchen")
+    @ApiResponse(responseCode = "200", description = "CollectionModel mid den Bestellungen")
+    @ApiResponse(responseCode = "404", description = "Keine Bestellungen gefunden")
+    @SuppressWarnings("ReturnCount")
+    ResponseEntity<CollectionModel<? extends TherapeutModel>> get(
+        @RequestParam final Map<String, String> queryParams,
+        final HttpServletRequest request
+    ) {
+        log.debug("get: queryParams={}", queryParams);
+        if (queryParams.size() > 1) {
+            return notFound().build();
+        }
+
+        final Collection<Therapeut> therapeuten;
+        if (queryParams.isEmpty()) {
+            therapeuten = service.findAll();
+        } else {
+            final var kundeIdStr = queryParams.get("mitgliedId");
+            if (kundeIdStr == null) {
+                return notFound().build();
+            }
+            final var mitgliedId = UUID.fromString(kundeIdStr);
+            therapeuten = service.findByMitgliedId(mitgliedId);
+        }
+
+        final var baseUri = uriHelper.getBaseUri(request).toString();
+        @SuppressWarnings("LambdaBodyLength")
+        final var models = therapeuten
+            .stream()
+            .map(therapeut -> {
+                final var model = new TherapeutModel(therapeut);
+                model.add(Link.of(baseUri + '/' + therapeut.getId()));
+                return model;
+            })
+            .toList();
+        log.trace("get: {}", models);
+
+        return ok(CollectionModel.of(models));
     }
 }

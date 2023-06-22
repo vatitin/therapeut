@@ -3,6 +3,7 @@
   "vorname": "Testput",
   "email": "max-mustermann@acme.com",
   "geburtsdatum": "2002-01-12",
+  "mitglied_id": "00000000-0000-0000-0000-000000000001",
   "geschlecht": "M",
   "adresse": {
     "plz": "76137",

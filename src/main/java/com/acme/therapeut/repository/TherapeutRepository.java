@@ -74,4 +74,13 @@ public interface TherapeutRepository extends JpaRepository<Therapeut, UUID>, Que
      */
     @SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
     boolean existsByEmail(String email);
+
+    /**
+     * Therapeut zu gegebener Mitglied-ID aus der DB ermitteln.
+     *
+     * @param mitgliedId Kunde-ID für die Suche
+     * @return Liste der gefundenen Therapeuten
+     */
+    @EntityGraph(ADRESSE_GRAPH)
+    List<Therapeut> findByMitgliedId(UUID mitgliedId);
 }

@@ -7,6 +7,7 @@ import com.acme.therapeut.entity.Therapeut;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * ValueObject für das Neuanlegen und Ändern eines neuen Therapeuten.
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @SuppressWarnings("RecordComponentNumber")
 record TherapeutDTO(
+    UUID mitgliedID,
     String nachname,
     String vorname,
     String email,
@@ -49,6 +51,7 @@ record TherapeutDTO(
         final var therapeut = Therapeut
             .builder()
             .id(null)
+            .version(0)
             .nachname(nachname)
             .vorname(vorname)
             .email(email)
@@ -58,9 +61,10 @@ record TherapeutDTO(
             .taetigkeitsbereiche(taetigkeitsbereiche)
             .build();
 
-        // Rueckwaertsverweise
-        therapeut.getAdresse()
-            .setTherapeut(therapeut);
+        // Rueckwaertsverweis
+        if (adresseEntity != null) {
+            adresseEntity.setTherapeut(therapeut);
+        }
 
         return therapeut;
     }
