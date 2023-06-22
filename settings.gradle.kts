@@ -7,7 +7,7 @@ pluginManagement {
 
         maven("https://repo.spring.io/milestone")
 
-        // Snapshots von Spring Framework, Spring Data, Spring Security
+        // Snapshots von Spring Framework, Spring Boot, ...
         // maven("https://repo.spring.io/snapshot") { mavenContent { snapshotsOnly() } }
         // maven("https://repo.spring.io/plugins-release")
     }
@@ -19,4 +19,4 @@ pluginManagement {
 //    }
 // }
 
-rootProject.name = "therapeut"
+rootProject.name = "kunde"

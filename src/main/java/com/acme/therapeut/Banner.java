@@ -16,17 +16,14 @@
  */
 package com.acme.therapeut;
 
-import com.github.lalyos.jfiglet.FigletFont;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.springframework.boot.SpringBootVersion;
-import org.springframework.core.SpringVersion;
-import org.springframework.security.core.SpringSecurityCoreVersion;
-
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
 import java.util.Objects;
+import org.springframework.boot.SpringBootVersion;
+import org.springframework.core.SpringVersion;
+import org.springframework.security.core.SpringSecurityCoreVersion;
 
 /**
  * Banner als String-Konstante für den Start des Servers.
@@ -42,16 +39,25 @@ import java.util.Objects;
 })
 @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
 final class Banner {
+
+    // http://patorjk.com/software/taag/#p=display&f=Slant&t=kunde%20v2
+    private static final String FIGLET = """
+            __                   __             ___
+           / /____  ______  ____/ /__     _   _|__ \\
+          / //_/ / / / __ \\/ __  / _ \\   | | / /_/ /
+         / ,< / /_/ / / / / /_/ /  __/   | |/ / __/
+        /_/|_|\\__,_/_/ /_/\\__,_/\\___/    |___/____/
+        """;
     private static final String JAVA = Runtime.version().toString() + " - " + System.getProperty("java.vendor");
     private static final String OS_VERSION = System.getProperty("os.name");
     private static final InetAddress LOCALHOST = getLocalhost();
     private static final long MEGABYTE = 1024L * 1024L;
     private static final Runtime RUNTIME = Runtime.getRuntime();
-    private static final String SERVICE_HOST = System.getenv("KUNDE_SERVICE_HOST");
-    private static final String SERVICE_PORT = System.getenv("KUNDE_SERVICE_PORT");
+    private static final String SERVICE_HOST = System.getenv("THERAPEUT_SERVICE_HOST");
+    private static final String SERVICE_PORT = System.getenv("THERAPEUT_SERVICE_PORT");
     private static final String KUBERNETES = SERVICE_HOST == null
         ? "N/A"
-        : "KUNDE_SERVICE_HOST=" + SERVICE_HOST + ", KUNDE_SERVICE_PORT=" + SERVICE_PORT;
+        : "THERAPEUT_SERVICE_HOST=" + SERVICE_HOST + ", THERAPEUT_SERVICE_PORT=" + SERVICE_PORT;
     private static final String USERNAME = System.getProperty("user.name");
 
     /**
@@ -61,10 +67,11 @@ final class Banner {
 
         $figlet
         (C) Juergen Zimmermann, Hochschule Karlsruhe
-        Version             1.0
+        Version             2023.1.1
         Spring Boot         $springBoot
         Spring Security     $springSecurity
         Spring Framework    $spring
+        Hibernate           $hibernate
         Java                $java
         Betriebssystem      $os
         Rechnername         $rechnername
@@ -78,10 +85,11 @@ final class Banner {
         OpenAPI             /swagger-ui.html /v3/api-docs.yaml
         H2 Console          $h2Console
         """
-        .replace("$figlet", getFiglet())
+        .replace("$figlet", FIGLET)
         .replace("$springBoot", SpringBootVersion.getVersion())
         .replace("$springSecurity", SpringSecurityCoreVersion.getVersion())
         .replace("$spring", Objects.requireNonNull(SpringVersion.getVersion()))
+        .replace("$hibernate", org.hibernate.Version.getVersionString())
         .replace("$java", JAVA)
         .replace("$os", OS_VERSION)
         .replace("$rechnername", LOCALHOST.getHostName())
@@ -95,14 +103,6 @@ final class Banner {
 
     @SuppressWarnings("ImplicitCallToSuper")
     private Banner() {
-    }
-
-    private static String getFiglet() {
-        try {
-            return FigletFont.convertOneLine("therapeut");
-        } catch (final IOException ex) {
-            throw new IllegalArgumentException(ex);
-        }
     }
 
     private static InetAddress getLocalhost() {

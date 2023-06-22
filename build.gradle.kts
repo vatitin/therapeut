@@ -19,22 +19,22 @@
 
 //  Aufrufe
 //  1) Microservice uebersetzen und starten
-//        .\gradlew bootRun [-Dport=8081] [tls=false] [-Ddb=mysql] [-Ddb=oracle] [--args='--debug'] [--continuous]
+//        .\gradlew bootRun [--args='--debug']
 //        .\gradlew compileJava
 //        .\gradlew compileTestJava
 //
-//  2) Microservice als selbstausfuehrendes JAR erstellen und ausfuehren
+//  2) Microservice als selbstausfuehrendes JAR oder Docker-Image erstellen und ausfuehren
 //        .\gradlew bootJar
-//        java -jar build/libs/....jar --spring.profiles.active=dev
-//        .\gradlew bootBuildImage [-Dtag='2023.1.1']
+//        java -jar build/libs/....jar
+//        .\gradlew bootBuildImage
 //
-//  3) Tests und QS
-//        .\gradlew test [--rerun-tasks] [-Ddb=h2]
+//  3) Tests und Codeanalyse
+//        .\gradlew test jacocoTestReport [--rerun-tasks]
+//        .\gradlew jacocoTestCoverageVerification
 //        .\gradlew allureServe
 //              EINMALIG>>   .\gradlew downloadAllure
-//        .\gradlew jacocoTestReport [-Ddb=h2]
-//        .\gradlew jacocoTestCoverageVerification [-Ddb=h2]
 //        .\gradlew checkstyleMain checkstyleTest spotbugsMain spotbugsTest
+//        .\gradlew sonar
 //        .\gradlew buildHealth
 //        .\gradlew reason --id com.fasterxml.jackson.core:jackson-annotations:...
 //
@@ -75,12 +75,14 @@
 //
 //  13) Initialisierung des Gradle Wrappers in der richtigen Version
 //      dazu ist ggf. eine Internetverbindung erforderlich
-//        gradle wrapper --gradle-version=8.1 --distribution-type=bin
+//        gradle wrapper --gradle-version=8.2-rc-2 --distribution-type=bin
 
 // https://github.com/gradle/kotlin-dsl/tree/master/samples
 // https://docs.gradle.org/current/userguide/kotlin_dsl.html
 // https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
 // https://guides.gradle.org/migrating-build-logic-from-groovy-to-kotlin
+
+// TODO https://youtrack.jetbrains.com/issue/IDEA-320266 Project.getConvention()
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.nio.file.Paths
@@ -90,6 +92,11 @@ import org.asciidoctor.gradle.jvm.pdf.AsciidoctorPdfTask
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
+
+val javaVersion: String = System.getProperty("java") ?: libs.versions.javaVersion.get()
+val javaLts = "17"
+val enablePreview = if (javaVersion == javaLts) null else "--enable-preview"
+val imagePath = project.properties["imagePath"] ?: "juergenzimmermann"
 
 plugins {
     java
@@ -111,6 +118,9 @@ plugins {
     // https://spotbugs.readthedocs.io/en/latest/gradle.html
     alias(libs.plugins.spotbugs)
 
+    // https://docs.sonarqube.org/latest/analyzing-source-code/scanners/sonarscanner-for-gradle
+    alias(libs.plugins.sonarqubePlugin)
+
     // https://github.com/diffplug/spotless/tree/main/plugin-gradle
     //alias(libs.plugins.spotless)
 
@@ -119,6 +129,10 @@ plugins {
 
     // https://github.com/allure-framework/allure-gradle
     // https://docs.qameta.io/allure/#_gradle_2
+    // TODO "The Project.getConvention() method has been deprecated."
+    // io.qameta.allure.gradle.adapter.AllureAdapterBasePlugin, ...AllureAdapterExtension, ...AllureAdapterPlugin
+    // io.qameta.allure.gradle.report.AllureReportBasePlugin, ...AllureReportExtension
+    // io.qameta.allure.gradle.download.AllureDownloadPlugin
     alias(libs.plugins.allure)
 
     // https://github.com/boxheed/gradle-sweeney-plugin
@@ -131,7 +145,6 @@ plugins {
     alias(libs.plugins.snyk)
 
     // https://github.com/asciidoctor/asciidoctor-gradle-plugin
-    // FIXME https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/597
     alias(libs.plugins.asciidoctor)
     alias(libs.plugins.asciidoctorPdf)
     // Leanpub als Alternative zu PDF: https://github.com/asciidoctor/asciidoctor-leanpub-converter
@@ -140,13 +153,15 @@ plugins {
     alias(libs.plugins.nwillc)
 
     // https://github.com/ben-manes/gradle-versions-plugin
+    // FIXME https://github.com/ben-manes/gradle-versions-plugin/issues/773: compileClasspathCopy usw. deprecated
     alias(libs.plugins.benManes)
 
     // https://github.com/markelliot/gradle-versions
     alias(libs.plugins.markelliot)
 
     // https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin
-    alias(libs.plugins.dependencyAnalysis)
+    // FIXME https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin/issues/893: Project.getConvention() deprecated
+    //alias(libs.plugins.dependencyAnalysis)
 
     // https://github.com/jk1/Gradle-License-Report
     alias(libs.plugins.licenseReport)
@@ -159,24 +174,25 @@ plugins {
 defaultTasks = mutableListOf("compileTestJava")
 group = "com.acme"
 version = "2023.1.0"
+val imageTag = project.properties["imageTag"] ?: project.version.toString()
 
 sweeney {
-    enforce(mapOf("type" to "gradle", "expect" to "[8.1.0,8.1.1]"))
+    enforce(mapOf("type" to "gradle", "expect" to "[8.2,8.2]"))
     // https://www.java.com/releases
     // https://devcenter.heroku.com/articles/java-support#specifying-a-java-version
-    enforce(mapOf("type" to "jdk", "expect" to "[19.0.2,21]"))
+    enforce(mapOf("type" to "jdk", "expect" to "[20.0,21]"))
     validate()
 }
 
 // https://docs.gradle.org/current/userguide/java_plugin.html#sec:java-extension
 // https://docs.gradle.org/current/dsl/org.gradle.api.plugins.JavaPluginExtension.html
 java {
-    sourceCompatibility = JavaVersion.toVersion(libs.versions.javaVersion.get())
+    toolchain {
+        // einschl. sourceCompatibility und targetCompatibility
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }
+    // sourceCompatibility = JavaVersion.toVersion(javaVersion)
     // targetCompatibility = sourceCompatibility
-    //toolchain {
-    //    // einschl. sourceCompatibility und targetCompatibility
-    //    languageVersion.set(JavaLanguageVersion.of(libs.versions.javaVersion.get()))
-    //}
 }
 
 repositories {
@@ -186,13 +202,13 @@ repositories {
     // https://github.com/spring-projects/spring-framework/wiki/Release-Process
     maven("https://repo.spring.io/milestone") { mavenContent { releasesOnly() } }
 
-    // Snapshots von Spring (auch fuer Snapshots von springdoc-openapi)
+    // Snapshots von Spring Framework, Spring Boot, Spring Data, Spring Security, Spring for GraphQL, ...
     // maven("https://repo.spring.io/snapshot") { mavenContent { snapshotsOnly() } }
 
     // Snapshots von springdoc-openapi
     // maven("https://s01.oss.sonatype.org/content/repositories/snapshots") { mavenContent { snapshotsOnly() } }
 
-    // Snapshots von JaCoCo fuer Java 20
+    // Snapshots von JaCoCo
     // maven("https://oss.sonatype.org/content/repositories/snapshots") {
     //     mavenContent { snapshotsOnly() }
     //     // https://docs.gradle.org/current/userguide/jacoco_plugin.html#sec:jacoco_dependency_management
@@ -214,14 +230,14 @@ dependencies {
     implementation(platform(libs.jacksonBom))
     implementation(platform(libs.nettyBom))
     implementation(platform(libs.reactorBom))
-    //implementation(platform(libs.springBom))
+    implementation(platform(libs.springBom))
     //implementation(platform(libs.querydslBom))
-    //implementation(platform(libs.springDataBom))
+    implementation(platform(libs.springDataBom))
     //implementation(platform(libs.springSecurityBom))
     //implementation(platform(libs.zipkinReporterBom))
     //implementation(platform(libs.assertjBom))
-    implementation(platform(libs.mockitoBom))
-    //implementation(platform(libs.junitBom))
+    //implementation(platform(libs.mockitoBom))
+    implementation(platform(libs.junitBom))
     implementation(platform(libs.allureBom))
     implementation(platform(libs.springBootBom))
     // spring-boot-starter-parent als "Parent POM"
@@ -238,37 +254,47 @@ dependencies {
         exclude(group = "org.apache.tomcat.embed", module = "tomcat-embed-websocket")
     }
     implementation("org.springframework.boot:spring-boot-starter-web")
-
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-json")
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    // implementation(libs.crac)
+
+    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("mysql:mysql-connector-java")
+    runtimeOnly("com.oracle.database.jdbc:ojdbc11")
+    runtimeOnly("com.h2database:h2")
+
+    // https://github.com/querydsl/querydsl/issues/2444#issuecomment-489538997
+    // https://stackoverflow.com/questions/59950657/querydsl-annotation-processor-and-gradle-plugin#answer-59951292
+    // https://github.com/querydsl/querydsl/issues/3436
+    // https://discuss.gradle.org/t/annotationprocessor-querydsl-java-lang-noclassdeffounderror/27107/5
+    // https://github.com/hibernate/hibernate-orm/tree/main/tooling/hibernate-gradle-plugin fuer "Static Metamodel"-Klassen
+    implementation("com.querydsl:querydsl-jpa:${libs.versions.querydsl.get()}:jakarta")
+    annotationProcessor("com.querydsl:querydsl-apt:${libs.versions.querydsl.get()}:jakarta")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api:${libs.versions.jakartaPersistence.get()}")
+
+    // Flyway unterstuetzt nicht Oracle 23: https://documentation.red-gate.com/fd/oracle-184127602.html
+    if (project.properties["noFlyway"] != "true") {
+        implementation("org.flywaydb:flyway-core")
+        // https://flywaydb.org/documentation/database/mysql#java-usage
+        runtimeOnly("org.flywaydb:flyway-mysql")
+    }
+
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-crypto")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-
-    implementation("org.flywaydb:flyway-core")
-    // https://flywaydb.org/documentation/database/mysql#java-usage
-    runtimeOnly("org.flywaydb:flyway-mysql")
+    // https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.docker-compose
+    //developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     // Tracing und Metriken durch Micrometer sowie Visualisierung durch Zipkin oder Prometheus/Grafana
     // FIXME https://github.com/spring-projects/spring-graphql/issues/547 NullPointerException, wenn Requests von Spring-basierten GraphQL-Clients empfangen werden
     //implementation("io.micrometer:micrometer-observation")
     //implementation("io.micrometer:micrometer-tracing-bridge-brave")
     //implementation("io.zipkin.reporter2:zipkin-reporter-brave")
-
-    implementation(libs.jfiglet)
-
-    // https://github.com/querydsl/querydsl/issues/2444#issuecomment-489538997
-    // https://stackoverflow.com/questions/59950657/querydsl-annotation-processor-and-gradle-plugin#answer-59951292
-    // https://github.com/querydsl/querydsl/issues/3436
-    // https://discuss.gradle.org/t/annotationprocessor-querydsl-java-lang-noclassdeffounderror/27107/5
-    implementation("com.querydsl:querydsl-jpa:${libs.versions.querydsl.get()}:jakarta")
-    annotationProcessor("com.querydsl:querydsl-apt:${libs.versions.querydsl.get()}:jakarta")
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api:${libs.versions.jakartaPersistence.get()}")
 
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
@@ -279,16 +305,17 @@ dependencies {
     // https://www.baeldung.com/spring-rest-openapi-documentation
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
 
-    runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("mysql:mysql-connector-java")
-    runtimeOnly("com.oracle.database.jdbc:ojdbc11")
-    runtimeOnly("com.h2database:h2")
     runtimeOnly(libs.jansi)
     runtimeOnly(libs.bouncycastle) // Argon2
 
     compileOnly(libs.spotbugsAnnotations)
     // https://github.com/spring-projects/spring-framework/issues/25095
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
+
+    // https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.docker-compose
+    if (project.properties["dockerCompose"] == "true") {
+        developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    }
 
     // https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using-boot-devtools
     //developmentOnly("org.springframework.boot:spring-boot-devtools:${libs.versions.springBoot.get()}")
@@ -314,21 +341,25 @@ dependencies {
         //implementation(libs.springHateoas)
         //implementation(libs.jakartaPersistence)
         implementation(libs.hibernate)
-        implementation(libs.flyway)
         //runtimeOnly(libs.postgres)
         runtimeOnly(libs.mysql)
-        runtimeOnly(libs.flywayMySQL)
-        //runtimeOnly(libs.oracle)
+        runtimeOnly(libs.oracle)
+        if (project.properties["noFlyway"] != "true") {
+            implementation(libs.flyway)
+            runtimeOnly(libs.flywayMySQL)
+        }
         //implementation(libs.hibernateValidator)
-        //implementation(libs.bundles.tomcat)
+        implementation(libs.bundles.tomcat)
         //implementation(libs.bundles.graphqlJavaBundle)
         implementation(libs.graphqlJava)
         //implementation(libs.graphqlJavaDataloader)
         implementation(libs.angusMail)
+        //implementation(libs.snakeyaml)
         //implementation(libs.bundles.slf4jBundle)
-        //implementation(libs.logback)
+        implementation(libs.logback)
         //implementation(libs.bundles.log4j)
         //implementation(libs.springSecurityRsa)
+        testImplementation(libs.mockitoInline)
     }
 }
 /* ktlint-enable comment-spacing */
@@ -347,8 +378,10 @@ tasks.compileJava {
         add("-Xlint:unchecked")
         // fuer springdoc-openapi https://github.com/spring-projects/spring-framework/issues/29563
         add("-parameters")
-        add("--enable-preview")
-        //add("-Xlint:preview")
+        if (enablePreview != null) {
+            add(enablePreview)
+            //add("-Xlint:preview")
+        }
 
         // https://github.com/tbroyer/gradle-errorprone-plugin#jdk-16-support
         add("--add-opens")
@@ -363,16 +396,18 @@ tasks.compileJava {
     }
 
     // ohne sourceCompatiblity und targetCompatibility:
-    //options.release.set(libs.versions.javaVersion.get())
+    //options.release = javaVersion
     // https://blog.gradle.org/incremental-compiler-avoidance#about-annotation-processors
 }
 
 tasks.compileTestJava {
-    sourceCompatibility = libs.versions.javaVersion.get()
+    sourceCompatibility = javaVersion
     options.isDeprecation = true
     with(options.compilerArgs) {
         add("-Xlint:unchecked")
-        add("--enable-preview")
+        if (enablePreview != null) {
+            add(enablePreview)
+        }
     }
     options.errorprone.errorproneArgs.add("-Xep:VariableNameSameAsType:OFF")
 }
@@ -391,40 +426,37 @@ tasks.named<BootJar>("bootJar") {
 
 // https://github.com/paketo-buildpacks/spring-boot
 tasks.named<BootBuildImage>("bootBuildImage") {
-    // "created 42 years ago" wegen Reproducability: https://medium.com/buildpacks/time-travel-with-pack-e0efd8bf05db
+    // statt "created 43 years ago": https://medium.com/buildpacks/time-travel-with-pack-e0efd8bf05db
+    createdDate = "now"
 
     // default:   imageName = "docker.io/${project.name}:${project.version}"
-    val path = "juergenzimmermann"
-    val tag = System.getProperty("tag") ?: project.version.toString()
-    imageName.set("$path/${project.name}:$tag")
+    imageName = "$imagePath/${project.name}:$imageTag"
 
     // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image.examples.builder-configuration
     // https://github.com/bell-sw/Liberica/releases
     @Suppress("StringLiteralDuplication")
-    environment.set(
-        mapOf(
-            // https://github.com/paketo-buildpacks/bellsoft-liberica/releases
-            // https://github.com/paketo-buildpacks/bellsoft-liberica#configuration
-            // https://github.com/paketo-buildpacks/bellsoft-liberica/blob/main/buildpack.toml
-            "BP_JVM_VERSION" to "20", // default: 17
-            "BPL_JVM_THREAD_COUNT" to "20", // default: 250
-            // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image.examples.runtime-jvm-configuration
-            "BPE_DELIM_JAVA_TOOL_OPTIONS" to " ",
-            "BPE_APPEND_JAVA_TOOL_OPTIONS" to "--enable-preview",
-            // https://github.com/paketo-buildpacks/spring-boot#configuration
-            // https://github.com/paketo-buildpacks/spring-boot/blob/main/buildpack.toml
-            //"BP_SPRING_CLOUD_BINDINGS_DISABLED" to "true",
-            //"BPL_SPRING_CLOUD_BINDINGS_DISABLED" to "true",
-            //"BPL_SPRING_CLOUD_BINDINGS_ENABLED" to "false", // deprecated
-            // https://paketo.io/docs/howto/configuration/#enabling-debug-logging
-            //"BP_LOG_LEVEL" to "DEBUG",
+    environment = mapOf(
+        // https://github.com/paketo-buildpacks/bellsoft-liberica/releases
+        // https://github.com/paketo-buildpacks/bellsoft-liberica#configuration
+        // https://github.com/paketo-buildpacks/bellsoft-liberica/blob/main/buildpack.toml
+        "BP_JVM_VERSION" to javaVersion, // default: 17
+        "BPL_JVM_THREAD_COUNT" to "20", // default: 250 (reactive: 50)
+        // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image.examples.runtime-jvm-configuration
+        "BPE_DELIM_JAVA_TOOL_OPTIONS" to " ",
+        "BPE_APPEND_JAVA_TOOL_OPTIONS" to enablePreview,
+        // https://github.com/paketo-buildpacks/spring-boot#configuration
+        // https://github.com/paketo-buildpacks/spring-boot/blob/main/buildpack.toml
+        //"BP_SPRING_CLOUD_BINDINGS_DISABLED" to "true",
+        //"BPL_SPRING_CLOUD_BINDINGS_DISABLED" to "true",
+        //"BPL_SPRING_CLOUD_BINDINGS_ENABLED" to "false", // deprecated
+        // https://paketo.io/docs/howto/configuration/#enabling-debug-logging
+        //"BP_LOG_LEVEL" to "DEBUG",
 
-            // paketobuildpacks/builder:tiny als Builder fuer "Native Image"
-            // https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html
-            // https://github.com/spring-projects/spring-framework/blob/main/framework-docs/src/docs/asciidoc/core/core-aot.adoc
-            //"BP_NATIVE_IMAGE" to "true",
-            //"BP_BOOT_NATIVE_IMAGE_BUILD_ARGUMENTS" to "-H:+ReportExceptionStackTraces",
-        )
+        // paketobuildpacks/builder:tiny als Builder fuer "Native Image"
+        // https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html
+        // https://github.com/spring-projects/spring-framework/blob/main/framework-docs/src/docs/asciidoc/core/core-aot.adoc
+        //"BP_NATIVE_IMAGE" to "true",
+        //"BP_BOOT_NATIVE_IMAGE_BUILD_ARGUMENTS" to "-H:+ReportExceptionStackTraces",
     )
 
     // https://paketo.io/docs/howto/java/#use-an-alternative-jvm
@@ -434,28 +466,22 @@ tasks.named<BootBuildImage>("bootBuildImage") {
     // Nur JDK: Amazon Corretto, Oracle, Microsoft OpenJDK, Alibaba Dragonwell
 
     // Eclipse Temurin statt Bellsoft Liberica: JRE 8, 11, 17, 20
-    //buildpacks.set(
-    //    listOf(
-    //        //"paketo-buildpacks/ca-certificates",
-    //        "gcr.io/paketo-buildpacks/adoptium",
-    //        "paketo-buildpacks/java",
-    //    )
+    //buildpacks = listOf(
+    //    //"paketo-buildpacks/ca-certificates",
+    //    "gcr.io/paketo-buildpacks/adoptium",
+    //    "paketo-buildpacks/java",
     //)
 
     // SapMachine statt Bellsoft Liberica: JRE 11, 17, 20
-    //buildpacks.set(
-    //    listOf(
-    //        "gcr.io/paketo-buildpacks/sap-machine",
-    //        "paketo-buildpacks/java",
-    //    )
+    //buildpacks = listOf(
+    //    "gcr.io/paketo-buildpacks/sap-machine",
+    //    "paketo-buildpacks/java",
     //)
 
-    // Azul Zulu statt Bellsoft Liberica: JRE 8, 11, 17, 19
-    //buildpacks.set(
-    //    listOf(
-    //        "gcr.io/paketo-buildpacks/azul-zulu",
-    //        "paketo-buildpacks/java",
-    //    )
+    // Azul Zulu statt Bellsoft Liberica: JRE 8, 11, 17, 20
+    //buildpacks = listOf(
+    //    "gcr.io/paketo-buildpacks/azul-zulu",
+    //    "paketo-buildpacks/java",
     //)
 
     // Podman statt Docker
@@ -465,80 +491,25 @@ tasks.named<BootBuildImage>("bootBuildImage") {
     // }
 }
 
-// https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#core.aot
-// https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#native-image
-// Kommentar entfernen fuer Spring AOT
-//tasks.named<org.springframework.boot.gradle.tasks.aot.ProcessAot>("processAot") {
-//    jvmArgs = listOf("--enable-preview")
-//}
-//tasks.named<JavaCompile>("compileAotJava") {
-//    options.compilerArgs.add("--enable-preview")
-//}
-//tasks.named<org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask>("nativeCompile") {
-//    options.get().jvmArgs("--enable-preview")
-//}
-
 //tasks.??? {
-//    removeXmlSupport.set(false)
+//    removeXmlSupport = false
 //}
 
 tasks.named<BootRun>("bootRun") {
-    // https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using-boot-devtools
-    //classpath(configurations.developmentOnly)
-
-    jvmArgs("--enable-preview")
-    // Hibernate 6.2: zzgl. Configuration mit @EnableLoadTimeWeaving
-    //jvmArgs("--enable-preview", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-javaagent:spring-instrument-VERSION.jar")
-
+    if (enablePreview != "") {
+        jvmArgs(enablePreview)
+    }
 
     // "System Properties", z.B. fuer Spring Properties oder fuer logback
     // https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties
-    val port = System.getProperty("port")
-    if (port != null) {
-        systemProperty("server.port", port)
-    }
-
-    if (System.getProperty("tls") == "false" || System.getProperty("tls") == "no") {
-        @Suppress("StringLiteralDuplication")
-        systemProperty("server.ssl.enabled", "false")
-        @Suppress("StringLiteralDuplication")
-        systemProperty("server.http2.enabled", "false")
-    }
-
     systemProperty("spring.profiles.default", "dev")
     systemProperty("spring.profiles.active", "dev")
-    systemProperty("spring.config.location", "classpath:/application.yml")
-    systemProperty("spring.datasource.password", "p")
-    systemProperty("spring.output.ansi.enabled", "ALWAYS")
-    systemProperty("server.tomcat.basedir", "./build/tomcat")
     systemProperty("LOG_PATH", "./build/log")
-    systemProperty("APPLICATION_LOGLEVEL", System.getProperty("APPLICATION_LOGLEVEL") ?: "TRACE")
     // Logging der Header-Daten
     systemProperty("REQUEST_RESPONSE_LOGLEVEL", System.getProperty("REQUEST_RESPONSE_LOGLEVEL") ?: "DEBUG")
+    systemProperty("APPLICATION_LOGLEVEL", System.getProperty("APPLICATION_LOGLEVEL") ?: "TRACE")
     systemProperty("HIBERNATE_LOGLEVEL", System.getProperty("HIBERNATE_LOGLEVEL") ?: "DEBUG")
     systemProperty("FLYWAY_LOGLEVEL", System.getProperty("FLYWAY_LOGLEVEL") ?: "DEBUG")
-
-    // $env:TEMP\tomcat-docbase.* -> src\main\webapp (urspruengl. fuer WAR)
-    // Document Base = Context Root, siehe https://tomcat.apache.org/tomcat-10.1-doc/config/context.html
-    // $env:TEMP\hsperfdata_<USERNAME>\<PID> Java HotSpot Performance data log: bei jedem Start der JVM neu angelegt.
-    // https://support.oracle.com/knowledge/Middleware/2325910_1.html
-    // https://blog.mygraphql.com/zh/notes/java/diagnostic/hsperfdata/hsperfdata
-
-    when (System.getProperty("db")) {
-        // Tablespace fuer flyway_schema_history nur bei PostgreSQL
-        // MySQL: Flyway generiert bei "CREATE TABLE flyway_schema_history ..." nicht "ROW_FORMAT=COMPACT"
-        // Oracle: CREATE TABLESPACE ist sehr kompliziert https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/CREATE-TABLESPACE.html
-        "postgres", null -> systemProperty("spring.flyway.tablespace", "${project.name}space")
-        "mysql" -> systemProperty("spring.datasource.url", "jdbc:mysql://localhost/${project.name}")
-        "oracle" -> systemProperty("spring.datasource.url", "jdbc:oracle:thin:@localhost/XEPDB1")
-        "h2" -> {
-            systemProperty("spring.datasource.url", "jdbc:h2:mem:testdb")
-            systemProperty("spring.datasource.username", "sa")
-            systemProperty("spring.datasource.password", "")
-            systemProperty("spring.h2.console.enabled", true)
-        }
-        else -> throw IllegalArgumentException("Fehler bei -Ddb=mysql|oracle|h2")
-    }
 }
 
 tasks.test {
@@ -561,35 +532,17 @@ tasks.test {
 
     systemProperty("javax.net.ssl.trustStore", "./src/main/resources/truststore.p12")
     systemProperty("javax.net.ssl.trustStorePassword", "zimmermann")
-    systemProperty("junit.platform.output.capture.stdout", true)
-    systemProperty("junit.platform.output.capture.stderr", true)
-    systemProperty("spring.config.location", "classpath:/application.yml")
-    systemProperty("spring.datasource.password", "p")
-    systemProperty("server.tomcat.basedir", "./build/tomcat")
-
     systemProperty("LOG_PATH", "./build/log")
     systemProperty("APPLICATION_LOGLEVEL", "TRACE")
     systemProperty("HIBERNATE_LOGLEVEL", "DEBUG")
     // systemProperty("HIBERNATE_LOGLEVEL", "TRACE")
     systemProperty("FLYWAY_LOGLEVEL", "DEBUG")
+    systemProperty("junit.platform.output.capture.stdout", true)
+    systemProperty("junit.platform.output.capture.stderr", true)
 
-    when (System.getProperty("db")) {
-        // Tablespace fuer flyway_schema_history nur bei PostgreSQL
-        // MySQL: Flyway generiert bei "CREATE TABLE flyway_schema_history ..." nicht "ROW_FORMAT=COMPACT"
-        // Oracle: CREATE TABLESPACE ist sehr kompliziert https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/CREATE-TABLESPACE.html
-        "postgres", null -> systemProperty("spring.flyway.tablespace", "${project.name}space")
-        "mysql" -> systemProperty("spring.datasource.url", "jdbc:mysql://localhost/${project.name}")
-        "oracle" -> systemProperty("spring.datasource.url", "jdbc:oracle:thin:@localhost/XEPDB1")
-        "h2" -> {
-            systemProperty("spring.datasource.url", "jdbc:h2:mem:testdb")
-            systemProperty("spring.datasource.username", "sa")
-            systemProperty("spring.datasource.password", "")
-            systemProperty("spring.h2.console.enabled", true)
-        }
-        else -> throw IllegalArgumentException("Fehler bei -Ddb=mysql|oracle|h2")
+    if (enablePreview != null) {
+        jvmArgs(enablePreview)
     }
-
-    jvmArgs("--enable-preview")
 
     // https://docs.gradle.org/current/userguide/java_testing.html#sec:debugging_java_tests
     // https://www.jetbrains.com/help/idea/run-debug-configuration-junit.html
@@ -601,25 +554,25 @@ tasks.test {
 
 // https://docs.qameta.io/allure/#_gradle_2
 allure {
-    version.set(libs.versions.allure.get())
+    version = libs.versions.allure.get()
     adapter {
         frameworks {
             junit5 {
-                adapterVersion.set(libs.versions.allureJunit.get())
-                autoconfigureListeners.set(true)
-                enabled.set(true)
+                adapterVersion = libs.versions.allureJunit.get()
+                autoconfigureListeners = true
+                enabled = true
             }
         }
-        autoconfigure.set(true)
-        aspectjWeaver.set(false)
-        aspectjVersion.set(libs.versions.aspectjweaver.get())
+        autoconfigure = true
+        aspectjWeaver = false
+        aspectjVersion = libs.versions.aspectjweaver.get()
     }
 
     // https://github.com/allure-framework/allure-gradle#customizing-allure-commandline-download
     // commandline {
-    //     group.set("io.qameta.allure")
-    //     module.set("allure-commandline")
-    //     extension.set("zip")
+    //     group = "io.qameta.allure"
+    //     module = "allure-commandline"
+    //     extension = "zip"
     // }
 }
 
@@ -631,8 +584,8 @@ jacoco {
 // https://guides.gradle.org/migrating-build-logic-from-groovy-to-kotlin/#configuring-tasks
 tasks.getByName<JacocoReport>("jacocoTestReport") {
     reports {
-        xml.required.set(true)
-        html.required.set(true)
+        xml.required = true
+        html.required = true
     }
 
     // afterEvaluate gibt es nur bei getByName<> ("eager"), nicht bei named<> ("lazy")
@@ -674,21 +627,32 @@ checkstyle {
 
 tasks.withType<Checkstyle>().configureEach {
     reports {
-        xml.required.set(true)
-        html.required.set(true)
+        xml.required = true
+        html.required = true
     }
 }
 
 spotbugs {
     // https://github.com/spotbugs/spotbugs/releases
-    toolVersion.set(libs.versions.spotbugs.get())
+    toolVersion = libs.versions.spotbugs.get()
 }
 tasks.spotbugsMain {
     reports.create("html") {
-        required.set(true)
-        outputLocation.set(file("${layout.buildDirectory.asFile.get()}/reports/spotbugs.html"))
+        required = true
+        outputLocation = file("${layout.buildDirectory.asFile.get()}/reports/spotbugs.html")
     }
-    excludeFilter.set(file("extras/spotbugs-exclude.xml"))
+    excludeFilter = file("extras/spotbugs-exclude.xml")
+}
+
+// https://docs.sonarqube.org/latest/analyzing-source-code/scanners/sonarscanner-for-gradle/#analyzing
+sonarqube {
+    properties {
+        property("sonar.organization", "Softwarearchitektur und Microservices")
+        property("sonar.host.url", "http://localhost:9000")
+        property("sonar.token", project.properties["sonarToken"]!!)
+        property("sonar.scm.disabled", "true")
+        property("sonar.exclusions", ".allure/**/*,.gradle/**/*,.idea/**/*,build/**/*,extras/**/*,gradle/**/*,src/test/java/**/*,target/*,tmp/**/*")
+    }
 }
 
 // https://github.com/jeremylong/DependencyCheck/blob/master/src/site/markdown/dependency-check-gradle/configuration.md
@@ -743,16 +707,18 @@ tasks.javadoc {
         showFromPackage()
         // outputLevel = org.gradle.external.javadoc.JavadocOutputLevel.VERBOSE
 
-        this as CoreJavadocOptions
-        // Keine bzw. nur elementare Warnings anzeigen wegen Lombok
-        // https://stackoverflow.com/questions/52205209/configure-gradle-build-to-suppress-javadoc-console-warnings
-        addStringOption("Xdoclint:none", "-quiet")
-        // https://stackoverflow.com/questions/59485464/javadoc-and-enable-preview
-        addBooleanOption("-enable-preview", true)
-        addStringOption("-release", "20")
+        if (this is CoreJavadocOptions) {
+            // Keine bzw. nur elementare Warnings anzeigen wegen Lombok
+            // https://stackoverflow.com/questions/52205209/configure-gradle-build-to-suppress-javadoc-console-warnings
+            addStringOption("Xdoclint:none", "-quiet")
+            // https://stackoverflow.com/questions/59485464/javadoc-and-enable-preview
+            addBooleanOption("-enable-preview", true)
+            addStringOption("-release", javaVersion)
+        }
 
-        this as StandardJavadocDocletOptions
-        author(true)
+        if (this is StandardJavadocDocletOptions) {
+            author(true)
+        }
     }
 }
 
@@ -781,8 +747,8 @@ tasks.getByName<AsciidoctorTask>("asciidoctor") {
 
     doLast {
         val outputPath = Paths.get(layout.buildDirectory.asFile.get().absolutePath, "docs", "asciidoc")
-        val outputFile = Paths.get(outputPath.toFile().absolutePath, "entwicklerhandbuch.html")
-        println("Das Entwicklerhandbuch ist in $outputFile")
+        val outputFile = Paths.get(outputPath.toFile().absolutePath, "projekthandbuch.html")
+        println("Das Projekthandbuch ist in $outputFile")
     }
 }
 

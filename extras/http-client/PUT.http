@@ -1,5 +1,5 @@
 ### Einen Therapeuten mittels PUT aktualisieren
-PUT {{restUrl}}/00000000-0000-0000-0000-000000000020
+PUT {{restUrl}}/00000000-0000-0000-0000-000000000000
 Content-Type: application/json
 
 < data/therapeut-30-put.json

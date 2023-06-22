@@ -2,8 +2,8 @@
 GRAPHQL {{graphqlUrl}}
 
 {
-  therapeut(id: "00000000-0000-0000-0000-000000000001") {
-    nachname
+  therapeut(id: "00000000-0000-0000-0000-000000000000") {
+    vorname
   }
 }
 > {%
