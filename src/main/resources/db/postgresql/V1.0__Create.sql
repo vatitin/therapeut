@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS login (
 CREATE TABLE IF NOT EXISTS therapeut (
     id            uuid PRIMARY KEY USING INDEX TABLESPACE therapeutspace,
                   -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT
+    version       integer NOT NULL DEFAULT 0,
+    mitglied_id   uuid NOT NULL,
     nachname      varchar(40) NOT NULL,
     vorname      varchar(40) NOT NULL,
 

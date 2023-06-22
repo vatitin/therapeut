@@ -31,12 +31,15 @@ VALUES
     ('30000000-0000-0000-0000-000000000060','phi','{argon2id}$argon2id$v=19$m=16384,t=3,p=1$QHb5SxDhddjUiGboXTc9S9yCmRoPsBejIvW/dw50DKg$WXZDFJowwMX5xsOun2BT2R3hv2aA9TSpnx3hZ3px59sTW0ObtqBwX7Sem6ACdpycArUHfxmFfv9Z49e7I+TI/g','KUNDE');
  */
 
-INSERT INTO therapeut (id, nachname, vorname, email, geburtsdatum, geschlecht, taetigkeitsbereiche, erzeugt, aktualisiert)
+INSERT INTO therapeut (id, version, nachname, vorname, mitglied_id, email, geburtsdatum, geschlecht, taetigkeitsbereiche, erzeugt, aktualisiert)
 VALUES
     -- admin
-    ('00000000-0000-0000-0000-000000000000','Nachname','Admin','admin@acme.com','2022-01-31','WEIBLICH','PHYSIO','2022-01-31 00:00:00','2022-01-31 00:00:00');
+    ('00000000-0000-0000-0000-000000000000', 0, 'Nachname','Admin', '00000000-0000-0000-0000-000000000001','admin@acme.com','2022-01-31','WEIBLICH','PHYSIO','2022-01-31 00:00:00','2022-01-31 00:00:00'),
+    ('00000000-0000-0000-0000-000000000001', 0, 'Günter','Albert', '00000000-0000-0000-0000-000000000001','user1@acme.com','2022-01-31','WEIBLICH','PHYSIO','2022-01-31 00:00:00','2022-01-31 00:00:00');
 
 
 INSERT INTO adresse (id, plz, ort, therapeut_id)
 VALUES
-  ('20000000-0000-0000-0000-000000000000','00000','Aachen','00000000-0000-0000-0000-000000000000');
+  ('20000000-0000-0000-0000-000000000000', '00000','Aachen','00000000-0000-0000-0000-000000000000'),
+  ('20000000-0000-0000-0000-000000000001', '00000','Aachen','00000000-0000-0000-0000-000000000001');
+
