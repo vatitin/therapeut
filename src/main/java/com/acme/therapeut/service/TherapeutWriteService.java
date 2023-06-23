@@ -57,11 +57,13 @@ public class TherapeutWriteService {
      *
      * @param therapeut Das Objekt mit den neuen Daten (ohne ID)
      * @param id ID des zu aktualisierenden Therapeuten
+     * @param version Die erforderliche Version
+     * @return Aktualisierter Therapeut mit erhöhter Versionsnummer
      * @throws ConstraintViolationsException Falls mindestens ein Constraint verletzt ist.
      * @throws NotFoundException Kein Therapeut zur ID vorhanden.
      * @throws EmailExistsException Es gibt bereits einen Therapeuten mit der Emailadresse.
      */
-    public Therapeut update(final Therapeut therapeut, final UUID id) {
+    public Therapeut update(final Therapeut therapeut, final UUID id, final int version) {
         log.debug("update: {}", therapeut);
         log.debug("update: id={}", id);
 
@@ -78,6 +80,11 @@ public class TherapeutWriteService {
 
         final var email = therapeut.getEmail();
         final var therapeutDB = therapeutDbOptional.get();
+
+        log.trace("update: version={}, therapeutDb={}", version, therapeutDB);
+        if (version != therapeutDB.getVersion()) {
+            throw new VersionOutdatedException(version);
+        }
         // Ist die neue Email bei einem *ANDEREN* Therapeuten vorhanden?
         if (!Objects.equals(email, therapeutDB.getEmail()) && repo.existsByEmail(email)) {
             log.debug("update: email {} existiert", email);
