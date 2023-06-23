@@ -17,7 +17,6 @@ interface Flyway {
      * @return FlywayMigrationStrategy
      */
     @Bean
-    @Profile("dev")
     default FlywayMigrationStrategy cleanMigrateStrategy() {
         // https://www.javadoc.io/doc/org.flywaydb/flyway-core/latest/org/flywaydb/core/Flyway.html
         return flyway -> {
