@@ -12,6 +12,11 @@ enum ProblemType {
     CONSTRAINTS("constraints"),
 
     /**
+     * Fehler beim Header If-Match.
+     */
+    PRECONDITION("precondition"),
+
+    /**
      * Fehler, wenn z.B. Emailadresse bereits existiert.
      */
     UNPROCESSABLE("unprocessable");

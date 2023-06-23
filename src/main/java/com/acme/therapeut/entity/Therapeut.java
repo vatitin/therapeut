@@ -143,7 +143,7 @@ public class Therapeut {
     private UUID mitgliedId;
 
     @Version
-    public int version;
+    private int version;
 
     /**
      * Die Taetigkeitsbereiche des Therapeuten.

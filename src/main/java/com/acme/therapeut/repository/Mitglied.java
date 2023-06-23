@@ -1,9 +1,11 @@
 package com.acme.therapeut.repository;
 
 /**
- * recor
- * @param nachname
- * @param vorname
+ * Entity-Klasse für den REST-Client.
+ *
+ * @author Valentin Sackmann
+ * @param nachname Nachmane
+ * @param vorname Vorname
  */
 public record Mitglied(String nachname, String vorname) {
 

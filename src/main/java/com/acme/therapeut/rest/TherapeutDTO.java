@@ -15,6 +15,7 @@ import java.util.UUID;
  *      verwendet.
  *
  * @author Valentin Sackmann
+ * @param mitgliedID Id des zugehörigen Mitglieds.
  * @param nachname Gültiger Nachname eines Therapeuten, d.h. mit einem geeigneten Muster.
  * @param vorname Gültiger Vorname eines Therapeuten.
  * @param email Email eines Therapeuten.

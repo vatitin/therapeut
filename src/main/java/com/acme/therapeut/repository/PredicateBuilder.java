@@ -91,7 +91,8 @@ public class PredicateBuilder {
         return qTherapeut.geschlecht.eq(GeschlechtType.of(geschlecht).orElse(null));
     }
 
-    private BooleanExpression taetigkeitsbereiche(final Collection<String> taetigkeitsbereiche, final QTherapeut qTherapeut) {
+    private BooleanExpression taetigkeitsbereiche(final Collection<String> taetigkeitsbereiche,
+                                                  final QTherapeut qTherapeut) {
         if (taetigkeitsbereiche == null || taetigkeitsbereiche.isEmpty()) {
             return null;
         }

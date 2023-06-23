@@ -6,22 +6,21 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.IF_NONE_MATCH;
 
 /**
- * "HTTP Interface" für den REST-Client für Kundedaten.
+ * "HTTP Interface" für den REST-Client für Mitglieddaten.
  *
- * @author <a href="mailto:Juergen.Zimmermann@h-ka.de">Jürgen Zimmermann</a>
+ * @author Valentin Sackmann
  */
 @HttpExchange("/rest")
 public interface MitgliedRestRepository {
     /**
-     * Einen Kundendatensatz vom Microservice "kunde" mit "Basic Authentication" anfordern.
+     * Einen Kundendatensatz vom Microservice "mitglied" mit "Basic Authentication" anfordern.
      *
-     * @param id ID des angeforderten Kunden
+     * @param id ID des angeforderten Mitglieds
      * @param version Version des angeforderten Datensatzes
-     * @return Gefundener Kunde
+     * @return Gefundenes Mitglied
      */
     @GetExchange("/{id}")
     @SuppressWarnings("unused")
@@ -31,11 +30,10 @@ public interface MitgliedRestRepository {
     );
 
     /**
-     * Einen Kundendatensatz vom Microservice "kunde" mit "Basic Authentication" anfordern.
+     * Einen Mitglieddatensatz vom Microservice "mitglied" mit "Basic Authentication" anfordern.
      *
-     * @param id ID des angeforderten Kunden
-     * @param authorization String für den HTTP-Header "Authorization"
-     * @return Gefundener Kunde
+     * @param id ID des angeforderten Mitglieds
+     * @return Gefundenes Mitglied
      */
     @GetExchange("/{id}")
     ResponseEntity<Mitglied> getMitglied(

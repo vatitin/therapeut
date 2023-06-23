@@ -5,7 +5,6 @@ import com.acme.therapeut.service.TherapeutReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
@@ -13,7 +12,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.LinkRelation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,14 +99,6 @@ public class TherapeutGetController {
         return service.findAll();
     }
 
-    /**
-     * Suche mit diversen Suchkriterien als Query-Parameter.
-     *
-     * @param suchkriterien Query-Parameter als Map.
-     * @param request Das Request-Objekt, um Links für HATEOAS zu erstellen.
-     * @return Gefundenen Therapeuten als CollectionModel.
-     */
-
     //todo remove
     /*
     @GetMapping(produces = HAL_JSON_VALUE)
@@ -136,7 +126,6 @@ public class TherapeutGetController {
         log.debug("find: {}", models);
         return CollectionModel.of(models);
     }
-
      */
 
     /**
