@@ -379,7 +379,7 @@ services:
   # k u n d e
   # ------------------------------------------------------------------------------------
   therapeut:
-    image: juergenzimmermann/therapeut:2023.1.1
+    image: valentinsackmann/therapeut:2023.1.1
     #image: juergenzimmermann/therapeut:2023.1.1-jammy
     #image: juergenzimmermann/therapeut:2023.1.1-ubi9
     depends_on:

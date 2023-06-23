@@ -21,5 +21,5 @@ package com.acme.therapeut;
  *
  * @author <a href="mailto:Juergen.Zimmermann@h-ka.de">Jürgen Zimmermann</a>
  */
-final class ApplicationConfig implements ThreadConfig, SecurityConfig {
+final class ApplicationConfig implements ThreadConfig, SecurityConfig, HttpClientConfig {
 }

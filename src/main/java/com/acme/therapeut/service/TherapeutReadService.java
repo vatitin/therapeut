@@ -106,14 +106,14 @@ public final class TherapeutReadService {
     }
 
     /**
-     * Bestellungen zur Kunde-ID suchen.
+     * Therapeuten zur Mitglied-ID suchen.
      *
-     * @param mitgliedId Die Id des gegebenen Kunden.
-     * @return Die gefundenen Bestellungen.
-     * @throws NotFoundException Falls keine Bestellungen gefunden wurden.
+     * @param mitgliedId Die Id des gegebenen Mitglieds.
+     * @return Die gefundenen Therapeuten.
+     * @throws NotFoundException Falls keine Therapeuten gefunden wurden.
      */
     public Collection<Therapeut> findByMitgliedId(final UUID mitgliedId) {
-        log.debug("findByKundeId: kundeId={}", mitgliedId);
+        log.debug("findByMitgliedId: mitgliedId={}", mitgliedId);
 
         final var therapeuten = repo.findByMitgliedId(mitgliedId);
         if (therapeuten.isEmpty()) {
@@ -123,7 +123,7 @@ public final class TherapeutReadService {
         final var mitglied = findMitgliedById(mitgliedId);
         final var nachname = mitglied == null ? null : mitglied.nachname();
         final var vorname = mitglied == null ? null : mitglied.vorname();
-        log.trace("findByKundeId: nachname={}, email={}", nachname, vorname);
+        log.trace("findByMitgliedId: nachname={}, email={}", nachname, vorname);
         therapeuten.forEach(therapeut -> {
             therapeut.setMitgliedNachname(nachname);
             therapeut.setMitgliedVorname(vorname);
@@ -135,7 +135,7 @@ public final class TherapeutReadService {
 
     @SuppressWarnings("ReturnCount")
     private Mitglied findMitgliedById(final UUID mitgliedId) {
-        log.debug("findKundeById: kundeId={}", mitgliedId);
+        log.debug("findMitgliedById: mitgliedId={}", mitgliedId);
 
         final ResponseEntity<Mitglied> response;
         try {

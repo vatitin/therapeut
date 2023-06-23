@@ -139,7 +139,7 @@ public class Therapeut {
     @ToString.Exclude
     private Adresse adresse;
 
-    @Column(name = "mitglied")
+    @Column(name = "mitglied_id")
     private UUID mitgliedId;
 
     @Version

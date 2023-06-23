@@ -108,6 +108,9 @@ public class TherapeutGetController {
      * @param request Das Request-Objekt, um Links für HATEOAS zu erstellen.
      * @return Gefundenen Therapeuten als CollectionModel.
      */
+
+    //todo remove
+    /*
     @GetMapping(produces = HAL_JSON_VALUE)
     @Operation(summary = "Suche mit Suchkriterien", tags = "Suchen")
     @ApiResponse(responseCode = "200", description = "CollectionModel mid den Therapeuten")
@@ -134,19 +137,21 @@ public class TherapeutGetController {
         return CollectionModel.of(models);
     }
 
+     */
+
     /**
      * Suche mit diversen Suchkriterien als Query-Parameter. Es wird eine Collection zurückgeliefert, damit auch der
      * Statuscode 204 möglich ist.
      *
      * @param queryParams Query-Parameter als Map.
      * @param request Das Request-Objekt, um Links für HATEOAS zu erstellen.
-     * @return Ein Response mit dem Statuscode 200 und einer Collection mit den gefundenen Bestellungen einschließlich
+     * @return Ein Response mit dem Statuscode 200 und einer Collection mit den gefundenen Therapeuten einschließlich
      *      Atom-Links, oder aber Statuscode 204.
      */
     @GetMapping(produces = HAL_JSON_VALUE)
     @Operation(summary = "Suche mit Suchkriterien", tags = "Suchen")
-    @ApiResponse(responseCode = "200", description = "CollectionModel mid den Bestellungen")
-    @ApiResponse(responseCode = "404", description = "Keine Bestellungen gefunden")
+    @ApiResponse(responseCode = "200", description = "CollectionModel mid den Therapeuten")
+    @ApiResponse(responseCode = "404", description = "Keine Therapeuten gefunden")
     @SuppressWarnings("ReturnCount")
     ResponseEntity<CollectionModel<? extends TherapeutModel>> get(
         @RequestParam final Map<String, String> queryParams,
