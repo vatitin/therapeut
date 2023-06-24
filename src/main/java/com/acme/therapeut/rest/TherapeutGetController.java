@@ -155,11 +155,11 @@ public class TherapeutGetController {
         if (queryParams.isEmpty()) {
             therapeuten = service.findAll();
         } else {
-            final var kundeIdStr = queryParams.get("mitgliedId");
-            if (kundeIdStr == null) {
+            final var mitgliedIdStr = queryParams.get("mitgliedId");
+            if (mitgliedIdStr == null) {
                 return notFound().build();
             }
-            final var mitgliedId = UUID.fromString(kundeIdStr);
+            final var mitgliedId = UUID.fromString(mitgliedIdStr);
             therapeuten = service.findByMitgliedId(mitgliedId);
         }
 

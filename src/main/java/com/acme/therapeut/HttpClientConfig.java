@@ -20,7 +20,7 @@ import java.time.Duration;
  */
 interface HttpClientConfig {
     String GRAPHQL_PATH = "/graphql";
-    int MITGLIED_DEFAULT_PORT = 8080;
+    int MITGLIED_DEFAULT_PORT = 8081;
     int TIMEOUT_IN_SECONDS = 10;
 
     @Bean

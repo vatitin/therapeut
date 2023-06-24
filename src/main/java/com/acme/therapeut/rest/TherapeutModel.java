@@ -14,6 +14,7 @@ import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Model-Klasse für Spring HATEOAS. @lombok.Data fasst die Annotationsn @ToString, @EqualsAndHashCode, @Getter, @Setter
@@ -22,7 +23,7 @@ import java.util.List;
  * @author Valentin Sackmann
  */
 @JsonPropertyOrder({
-    "nachname", "vorname", "email", "geburtsdatum", "geschlecht",
+    "nachname", "vorname", "email", "mitgliedId", "mitgliedNachname", "geburtsdatum", "geschlecht",
     "adresse", "taetigkeitsbereiche"
 })
 @Relation(collectionRelation = "therapeuten", itemRelation = "therapeut")
@@ -33,6 +34,9 @@ import java.util.List;
 class TherapeutModel extends RepresentationModel<TherapeutModel> {
     private final String nachname;
     private final String vorname;
+    private final UUID mitgliedId;
+    private final String mitgliedNachname;
+    private final String mitgliedVorname;
     @EqualsAndHashCode.Include
     private final String email;
 
@@ -42,6 +46,9 @@ class TherapeutModel extends RepresentationModel<TherapeutModel> {
     private final List<TaetigkeitsbereichType> taetigkeitsbereiche;
 
     TherapeutModel(final Therapeut therapeut) {
+        mitgliedId = therapeut.getMitgliedId();
+        mitgliedVorname = therapeut.getMitgliedVorname();
+        mitgliedNachname = therapeut.getMitgliedNachname();
         nachname = therapeut.getNachname();
         vorname = therapeut.getVorname();
         email = therapeut.getEmail();

@@ -52,6 +52,7 @@ record TherapeutDTO(
         final var therapeut = Therapeut
             .builder()
             .id(null)
+            .mitgliedId(mitgliedID)
             .version(0)
             .nachname(nachname)
             .vorname(vorname)
