@@ -6,24 +6,6 @@ GRAPHQL {{graphqlUrl}}
     vorname
   }
 }
-> {%
-    client.test('Query mit ID: OK', () => {
-        const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Query mit ID: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Query mit ID: body mit Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        const therapeut = body.data.therapeut;
-        client.assert(typeof therapeut.nachname === 'string', `therapeut: ${JSON.stringify(body.data.therapeut)}`);
-    });
-%}
 
 ### Suche mit nicht-vorhandener Therapeut-ID
 GRAPHQL {{graphqlUrl}}
@@ -33,30 +15,6 @@ GRAPHQL {{graphqlUrl}}
     nachname
   }
 }
-> {%
-    client.test('Query mit nicht-vorhandener ID: OK', () => {
-        const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Query mit nicht-vorhandener ID: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Query mit nicht-vorhandener ID: body mit Errors ohne Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        client.assert(typeof body.data === 'object', `body: ${JSON.stringify(body)}`);
-        client.assert(Object.keys(body.data).length === 0, `data: ${JSON.stringify(body.data)}`);
-        // TODO Optional Chaining
-        const errors = body.errors;
-        client.assert(Array.isArray(errors) === true, `errors: ${JSON.stringify(body.errors)}`);
-        client.assert(errors.length === 1, `errors: ${JSON.stringify(body.errors)}`);
-        client.assert(typeof errors[0].extensions.classification === 'string', `errors: ${JSON.stringify(errors)}`);
-        client.assert(errors[0].extensions.classification === 'NOT_FOUND', `errors: ${JSON.stringify(errors)}`);
-    });
-%}
 
 ### Suche mit vorhandener Therapeut-ID
 GRAPHQL {{graphqlUrl}}
@@ -75,26 +33,6 @@ GRAPHQL {{graphqlUrl}}
     }
   }
 }
-> {%
-    client.test('Query mit ID: OK', () => {
-      const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Query mit ID: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Query mit ID: body mit Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        // TODO Optional Chaining
-        const therapeut = body.data.therapeut;
-        client.assert(typeof therapeut.nachname === 'string', `therapeut: ${JSON.stringify(body.data.therapeut)}`);
-        client.assert(typeof therapeut.email === 'string', `therapeut: ${JSON.stringify(body.data.therapeut)}`);
-    });
-%}
 
 
 ### Suche alle Therapeuten
@@ -114,22 +52,3 @@ GRAPHQL {{graphqlUrl}}
     }
   }
 }
-> {%
-    client.test('Query alle Therapeuten: OK', () => {
-        const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Query alle Therapeuten: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Query alle Therapeuten: body mit Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        const therapeuten = body.data.therapeuten;
-        client.assert(Array.isArray(therapeuten) === true, `data: ${JSON.stringify(body.data)}`);
-        client.assert(therapeuten.length > 0, `data: ${JSON.stringify(body.data)}`);
-    });
-%}

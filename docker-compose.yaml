@@ -323,7 +323,7 @@ services:
   # ------------------------------------------------------------------------------------
   trivy:
     image: aquasec/trivy:0.42.0
-    command: [image, juergenzimmermann/therapeut:2023.1.0]
+    command: [image, valentinsackmann/therapeut:2023.1.0]
     profiles: [ trivy ]
     volumes:
       - type: bind

@@ -7,7 +7,7 @@ package org.springframework.stereotype {
 }
 
 package java.util {
-    interface List<T>
+    interface Collection<T>
     interface Map<K,V>
     class UUID
 
@@ -17,18 +17,23 @@ package java.util {
 package com.acme.therapeut {
     package entity {
         class Therapeut << entity >>
+        class Mitglied << entity >>
 
-        Therapeut .up[hidden].> List
+
+        Therapeut .up[hidden].> Collection
     }
 
     package repository {
         class TherapeutRepository << control >> << @Repository >>
+        class MitgliedRestRepository << control >> << @Repository >>
     }
 
     package service #DDDDDD {
         class TherapeutReadService << control >> << @Service >> {
             + findById(id: UUID): Therapeut
-            + find(queryParams: Map<String, String>): List<Therapeut>
+            + find(queryParams: Map<String, String>): Collection<Therapeut>
+            + findByMitgliedId(mitgliedId: UUID): Collection<Therapeut>
+            + findMitgliedById(mitgliedId: UUID ): Mitglied
         }
 
         TherapeutReadService o--> TherapeutRepository : repo

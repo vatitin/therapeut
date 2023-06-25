@@ -156,7 +156,7 @@ public class Therapeut {
     private String taetigkeitsbereicheStr;
 
     @Transient
-    private String mitgliedNachname;
+    private String mitgliedName;
 
     @Transient
     private String mitgliedVorname;
@@ -173,6 +173,7 @@ public class Therapeut {
      * @param therapeut Neue Therapeutendaten.
      */
     public void set(final Therapeut therapeut) {
+        mitgliedId = therapeut.mitgliedId;
         nachname = therapeut.nachname;
         vorname = therapeut.vorname;
         email = therapeut.email;

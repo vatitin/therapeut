@@ -78,7 +78,7 @@ public interface TherapeutRepository extends JpaRepository<Therapeut, UUID>, Que
     /**
      * Therapeut zu gegebener Mitglied-ID aus der DB ermitteln.
      *
-     * @param mitgliedId Kunde-ID für die Suche
+     * @param mitgliedId Therapeut-ID für die Suche
      * @return Liste der gefundenen Therapeuten
      */
     @EntityGraph(ADRESSE_GRAPH)

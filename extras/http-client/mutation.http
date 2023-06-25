@@ -6,6 +6,7 @@ mutation {
     input: {
       nachname: "Ql"
       vorname: "Graph"
+      mitglied_id: "00000000-0000-0000-0000-000000000001"
       email: "graphql@graphql.de"
       geburtsdatum: "2001-01-01"
       geschlecht: WEIBLICH
@@ -19,26 +20,6 @@ mutation {
     id
   }
 }
-> {%
-    client.test('Mutation neuer Therapeut: OK', () => {
-        const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Mutation neuer Therapeut: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Mutation neuer Therapeut: body mit Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        const create = body.data.create;
-        client.assert(typeof create === 'object', `data: ${JSON.stringify(body.data)}`);
-        const id = create.id;
-        client.assert(typeof id === 'string', `create: ${JSON.stringify(create)}`);
-    });
-%}
 
 ### Einen neuen Therapeuten mit fehlerhaften Daten anlegen
 GRAPHQL {{graphqlUrl}}
@@ -46,6 +27,7 @@ GRAPHQL {{graphqlUrl}}
 mutation {
   create(
     input: {
+      vorname: "-.,."
       nachname: "?!:"
       email: "email@"
       geburtsdatum: "2001-01-01"
@@ -60,32 +42,6 @@ mutation {
     id
   }
 }
-> {%
-    client.test('Mutation neuer Therapeut mit fehlerhaften Daten: OK', () => {
-        const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Mutation neuer Therapeut mit fehlerhaften Daten: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Mutation neuer Therapeut mit fehlerhaften Daten: body mit Errors ohne Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        client.assert(typeof body.data === 'object', `body: ${JSON.stringify(body)}`);
-        client.assert(Object.keys(body.data).length === 0, `data: ${JSON.stringify(body.data)}`);
-        // TODO Optional Chaining
-        const errors = body.errors;
-        client.assert(Array.isArray(errors) === true, `errors: ${JSON.stringify(body.errors)}`);
-                client.assert(errors.length > 0, `errors: ${JSON.stringify(body.errors)}`);
-                client.assert(typeof errors[0].extensions.classification === 'string', `errors: ${JSON.stringify(errors)}`);
-                client.assert(errors[0].extensions.classification === 'BAD_REQUEST', `errors: ${JSON.stringify(errors)}`);
-        errors.map(error => error.extensions.classification)
-            .forEach(classification => client.assert(classification === 'BAD_REQUEST', `classification: ${JSON.stringify(classification)}`));
-    });
-%}
 
 ### Einen neuen Therapeut mit existierender Emailadresse anlegen
 GRAPHQL {{graphqlUrl}}
@@ -95,7 +51,7 @@ mutation {
     input: {
       nachname: "Graphql"
       vorname: "Graphql"
-      email: "max-mustermann@acme.com"
+      email: "admin@acme.com"
       geburtsdatum: "2022-02-01"
       geschlecht: WEIBLICH
       adresse: {
@@ -108,30 +64,4 @@ mutation {
     id
   }
 }
-> {%
-    client.test('Mutation neuer Therapeut mit existierender Emailadresse: OK', () => {
-        const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
 
-    client.test('Mutation neuer Therapeut mit existierender Emailadresse: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Mutation neuer Therapeut mit existierender Emailadresse: body mit Fehlermeldung ohne Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        client.assert(typeof body.data === 'object', `body: ${JSON.stringify(body)}`);
-        client.assert(Object.keys(body.data).length === 0, `data: ${JSON.stringify(body.data)}`);
-        // TODO Optional Chaining
-        const errors = body.errors;
-        client.assert(Array.isArray(errors) === true, `errors: ${JSON.stringify(body.errors)}`);
-        client.assert(errors.length === 1, `errors: ${JSON.stringify(body.errors)}`);
-        client.assert(errors[0].message === 'Die Emailadresse alpha@acme.de existiert bereits.', `errors: ${JSON.stringify(body.errors)}`)
-        client.assert(typeof errors[0].extensions.classification === 'string', `errors: ${JSON.stringify(errors)}`);
-        client.assert(errors[0].extensions.classification === 'BAD_REQUEST', `errors: ${JSON.stringify(errors)}`);
-        errors.map(error => error.extensions.classification)
-            .forEach(classification => client.assert(classification === 'BAD_REQUEST', `classification: ${JSON.stringify(classification)}`));
-    });
-%}

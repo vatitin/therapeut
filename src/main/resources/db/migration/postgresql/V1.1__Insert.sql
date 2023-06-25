@@ -35,7 +35,7 @@ INSERT INTO therapeut (id, version, nachname, vorname, mitglied_id, email, gebur
 VALUES
     -- admin
     ('00000000-0000-0000-0000-000000000000', 0, 'Nachname','Admin', '00000000-0000-0000-0000-000000000001','admin@acme.com','2022-01-31','WEIBLICH','PHYSIO','2022-01-31 00:00:00','2022-01-31 00:00:00'),
-    ('00000000-0000-0000-0000-000000000001', 0, 'Günter','Albert', '00000000-0000-0000-0000-000000000001','user1@acme.com','2022-01-31','WEIBLICH','PHYSIO','2022-01-31 00:00:00','2022-01-31 00:00:00');
+    ('00000000-0000-0000-0000-000000000001', 0, 'Günter','Albert', '20000000-0000-0000-0000-000000000000','user1@acme.com','2022-01-31','WEIBLICH','PHYSIO','2022-01-31 00:00:00','2022-01-31 00:00:00');
 
 
 INSERT INTO adresse (id, plz, ort, therapeut_id)

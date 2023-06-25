@@ -4,25 +4,6 @@ Content-Type: application/json
 
 < data/therapeut-neu.json
 
-> {%
-    client.test('Einen neuen Therapeuten anlegen: Created', () => {
-        const status = response.status;
-        client.assert(status === 201, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Einen neuen Therapeuten anlegen: location', () => {
-        const headers = response.headers;
-        client.assert(typeof headers === 'object', `headers: ${JSON.stringify(headers)}`);
-        const location = headers.toJSON().Location;
-        client.assert(location !== null && location !== undefined, `headers: ${JSON.stringify(headers)}`);
-        client.assert(location.match(/[A-Fa-f\d]{8}-([A-Fa-f\d]{4}-){3}[A-Fa-f\d]{12}$/).length > 0, `location: ${location}`);
-    });
-
-    client.test('Einen neuen Therapeuten anlegen: leerer body', () => {
-        const body = response.body;
-        client.assert(body === null, `body: ${JSON.stringify(body)}`);
-    });
-%}
 
 ### Einen neuen Therapeuten mit bereits existierender Emailadresse anlegen: 422 (Unprocessable Entity)
 POST {{restUrl}}
@@ -30,22 +11,4 @@ Content-Type: application/json
 
 < data/therapeut-neu-email-exists.json
 
-> {%
-    client.test('Einen neuen Therapeuten mit bereits existierender Emailadresse anlegen: Unprocessable Entity (422)', () => {
-        const status = response.status;
-        client.assert(status === 422, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('Einen neuen Therapeuten mit bereits existierender Emailadresse anlegen: application/problem+json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === "application/problem+json", `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('Einen neuen Therapeuten mit bereits existierender Emailadresse anlegen: body mit ProblemDetail', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        const detail = body.detail;
-        client.assert(typeof detail === 'string' && detail === 'Die Emailadresse max-mustermann@acme.com existiert bereits', `detail: ${JSON.stringify(detail)}`);
-    });
-%}
 

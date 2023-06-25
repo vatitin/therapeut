@@ -96,7 +96,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 val javaVersion: String = System.getProperty("java") ?: libs.versions.javaVersion.get()
 val javaLts = "17"
 val enablePreview = if (javaVersion == javaLts) null else "--enable-preview"
-val imagePath = project.properties["imagePath"] ?: "juergenzimmermann"
+val imagePath = project.properties["imagePath"] ?: "valentinsackmann"
 
 plugins {
     java
@@ -180,7 +180,7 @@ sweeney {
     enforce(mapOf("type" to "gradle", "expect" to "[8.2,8.2]"))
     // https://www.java.com/releases
     // https://devcenter.heroku.com/articles/java-support#specifying-a-java-version
-    enforce(mapOf("type" to "jdk", "expect" to "[20.0,21]"))
+    enforce(mapOf("type" to "jdk", "expect" to "[20.0.1,21]"))
     validate()
 }
 

@@ -1,7 +1,7 @@
 {
   "nachname": "Testput",
   "vorname": "Testput",
-  "email": "max-mustermann@acme.com",
+  "email": "newEmail@acme.com",
   "geburtsdatum": "2002-01-12",
   "mitglied_id": "00000000-0000-0000-0000-000000000001",
   "geschlecht": "M",

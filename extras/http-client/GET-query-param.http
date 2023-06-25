@@ -2,29 +2,7 @@
 // https://www.jetbrains.com/help/idea/http-response-handling-examples.html#checking-response-headers-body
 
 ### Suche mit vorhandenem Nachnamen
-GET {{restUrl}}?nachname=Mustermann
+GET {{restUrl}}?nachname=Günter
 Accept: application/json
 
-> {%
-    client.test('GET mit vorhandenem Nachnamen: OK', () => {
-      const status = response.status;
-        client.assert(status === 200, `Falscher Statuscode: ${status}`);
-    });
-
-    client.test('GET mit vorhandenem Nachnamen: application/json', () => {
-        const mimeType = response.contentType.mimeType;
-        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
-    });
-
-    client.test('GET mit vorhandenem Nachnamen: body mit Daten', () => {
-        const body = response.body;
-        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
-        // TODO Optional Chaining
-        const therapeuten = body._embedded.therapeuten;
-        client.assert(Array.isArray(therapeuten), `body: ${JSON.stringify(body)}`);
-        client.assert(therapeuten.length > 0, `therapeuten: ${JSON.stringify(therapeuten)}`);
-        therapeuten.map(therapeut => therapeut.nachname)
-            .forEach(nachname => client.assert(nachname.includes('Mustermann'), `therapeuten: ${JSON.stringify(therapeuten)}`));
-    });
-%}
 

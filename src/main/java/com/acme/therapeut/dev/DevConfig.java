@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 /**
  * Konfigurationsklasse für die Anwendung bzw. den Microservice, falls das Profile dev aktiviert ist.
  *
- * @author <a href="mailto:Juergen.Zimmermann@h-ka.de">Jürgen Zimmermann</a>
+ * @author Valentin Sackmann
  */
 @Profile(DevConfig.DEV)
 @SuppressWarnings({"ClassNamePrefixedWithPackageName", "HideUtilityClassConstructor"})

@@ -23,7 +23,7 @@ import java.util.UUID;
  * @author Valentin Sackmann
  */
 @JsonPropertyOrder({
-    "nachname", "vorname", "email", "mitgliedId", "mitgliedNachname", "geburtsdatum", "geschlecht",
+    "nachname", "vorname", "email", "mitgliedId", "mitgliedName", "geburtsdatum", "geschlecht",
     "adresse", "taetigkeitsbereiche"
 })
 @Relation(collectionRelation = "therapeuten", itemRelation = "therapeut")
@@ -35,7 +35,7 @@ class TherapeutModel extends RepresentationModel<TherapeutModel> {
     private final String nachname;
     private final String vorname;
     private final UUID mitgliedId;
-    private final String mitgliedNachname;
+    private final String mitgliedName;
     private final String mitgliedVorname;
     @EqualsAndHashCode.Include
     private final String email;
@@ -48,7 +48,7 @@ class TherapeutModel extends RepresentationModel<TherapeutModel> {
     TherapeutModel(final Therapeut therapeut) {
         mitgliedId = therapeut.getMitgliedId();
         mitgliedVorname = therapeut.getMitgliedVorname();
-        mitgliedNachname = therapeut.getMitgliedNachname();
+        mitgliedName = therapeut.getMitgliedName();
         nachname = therapeut.getNachname();
         vorname = therapeut.getVorname();
         email = therapeut.getEmail();

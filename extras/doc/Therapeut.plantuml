@@ -1,7 +1,6 @@
 @startuml Therapeut
 
 skinparam classAttributeIconSize 0
-' skinparam monochrome true
 
 package java {
     package util {
@@ -11,49 +10,69 @@ package java {
 
     package time {
         class LocalDate
+        class LocalDateTime
     }
 
-    UUID .[hidden].> LocalDate
+    LocalDate .right[hidden].> LocalDateTime
 }
 
-package com.acme.therapeut.entity #DDDDDD {
+package jakarta.persistence {
+    interface "@Entity" as Entity
+    interface "@Table" as Table
 
-    class Adresse {
-        plz: String
-        ort: String
-    }
+    Entity -[hidden]down-> Table
+    LocalDateTime .up[hidden].> Table
+}
 
-    enum GeschlechtType {
-        MAENNLICH
-        WEIBLICH
-        DIVERS
-    }
+package com.acme.therapeut {
+    package entity #DDDDDD {
+        class Adresse << entity >> {
+            @Id @GeneratedValue @JsonIgnore id : UUID
+            plz: String
+            ort: String
+        }
+        Adresse ..> UUID
 
+        enum GeschlechtType {
+            MAENNLICH
+            WEIBLICH
+            DIVERS
+        }
 
-    enum TaetigkeitsbereichType {
+        enum TaetigkeitsbereichType {
         PHYSIO
         MASSAGE
         DIAET
+        }
+
+        class Therapeut << entity >>  << @Entity >>  << @Table >> {
+            @Id @GeneratedValue id : UUID
+            @Version version : int
+            nachname : String
+            vorname : String
+            email : String
+            mitgliedId : UUID
+            geburtsdatum: LocalDate
+            @Convert geschlecht: GeschlechtType
+            @ElementCollection @CollectionTable @Column @Convert taetigkeitsbereiche: List<TaetigkeitsbereichType>
+            @CreationTimestamp erzeugt: LocalDateTime
+            @UpdateTimestamp aktualisiert: LocalDateTime
+        }
+
+        Therapeut *--> "1" Adresse :  @OneToOne(cascade = [...]) @JoinColumn(...) adresse
+
+        Therapeut .up.> GeschlechtType
+        Therapeut .up.> TaetigkeitsbereichType
+
+        Therapeut ..> URL
+        Therapeut ..> LocalDate
+        Therapeut ..> LocalDateTime
+        Therapeut .right.> List
+        Therapeut .right.> Entity
+        Therapeut .right.> Table
+
+        GeschlechtType .[hidden].> List
     }
-
-    class Therapeut << entity >> {
-        id : UUID
-        nachname : String
-        vorname : String
-        email : String
-        geburtsdatum: LocalDate
-        geschlecht: GeschlechtType
-        taetigkeitsbereiche: List<TaetigkeitsbereichType>
-    }
-
-    Therapeut *--> "1" Adresse : adresse
-    Therapeut .up.> GeschlechtType
-    Therapeut .up.> TaetigkeitsbereichType
-
-    Therapeut ..> UUID
-    Therapeut ..> LocalDate
-    Therapeut ..> List
-
 }
 
 hide empty members

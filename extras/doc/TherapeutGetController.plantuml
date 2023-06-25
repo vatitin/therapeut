@@ -43,7 +43,7 @@ package com.acme.therapeut {
 
         class TherapeutGetController << boundary >> << @RestController >> << @RequestMapping >> {
             + @GetMapping findById(@PathVariable id: UUID, request: HttpServletRequest): TherapeutModel
-            + @GetMapping find(@RequestParam queryParams: MultiValueMap<String, String>, request: HttpServletRequest): CollectionModel<TherapeutModel>
+            + @GetMapping get(@RequestParam queryParams: Map<String, String>,final HttpServletRequest request): ResponseEntity<CollectionModel<? extends TherapeutModel>
         }
 
         class CommonExceptionHandler << @ControllerAdvice >> {

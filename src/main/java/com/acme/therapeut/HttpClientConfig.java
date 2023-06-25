@@ -13,10 +13,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Duration;
 
 /**
- * Beans für die REST-Schnittstelle zu "kunde" (WebClient) und für die GraphQL-Schnittstelle zu "kunde"
+ * Beans für die REST-Schnittstelle zu "mitglied" (WebClient) und für die GraphQL-Schnittstelle zu "mitglied"
  * (HttpGraphQlClient).
  *
- * @author <a href="mailto:Juergen.Zimmermann@h-ka.de">Jürgen Zimmermann</a>
+ * @author Valentin Sackmann
  */
 interface HttpClientConfig {
     String GRAPHQL_PATH = "/graphql";

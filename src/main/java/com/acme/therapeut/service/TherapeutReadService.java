@@ -121,11 +121,11 @@ public final class TherapeutReadService {
         }
 
         final var mitglied = findMitgliedById(mitgliedId);
-        final var nachname = mitglied == null ? null : mitglied.nachname();
+        final var name = mitglied == null ? null : mitglied.name();
         final var vorname = mitglied == null ? null : mitglied.vorname();
-        log.trace("findByMitgliedId: nachname={}, email={}", nachname, vorname);
+        log.trace("findByMitgliedId: nachname={}, email={}", name, vorname);
         therapeuten.forEach(therapeut -> {
-            therapeut.setMitgliedNachname(nachname);
+            therapeut.setMitgliedName(name);
             therapeut.setMitgliedVorname(vorname);
         });
 
@@ -139,27 +139,26 @@ public final class TherapeutReadService {
 
         final ResponseEntity<Mitglied> response;
         try {
-            // response = kundeRepository.getKundeMitVersion(kundeId.toString(), "\"0\"", ADMIN_BASIC_AUTH); // NOSONAR
             response = mitgliedRepository.getMitglied(mitgliedId.toString());
         } catch (final WebClientResponseException.NotFound ex) {
             // Statuscode 404
-            log.error("findKundeById: WebClientResponseException.NotFound");
+            log.error("findMitgliedById: WebClientResponseException.NotFound");
             return new Mitglied("N/A", "not.found@acme.com");
         } catch (final WebClientException ex) {
             // sonstiger Statuscode 4xx oder 5xx
             // WebClientRequestException oder WebClientResponseException (z.B. ServiceUnavailable)
-            log.error("findKundeById: {}", ex.getClass().getSimpleName());
+            log.error("findMitgliedById: {}", ex.getClass().getSimpleName());
             return new Mitglied("Exception", "exception@acme.com");
         }
 
         final var statusCode = response.getStatusCode();
-        log.debug("findKundeById: statusCode={}", statusCode);
+        log.debug("findMitgliedById: statusCode={}", statusCode);
         if (statusCode == NOT_MODIFIED) {
             return new Mitglied("Not-Modified", "not.modified@acme.com");
         }
 
         final var mitglied = response.getBody();
-        log.debug("findKundeById: {}", mitglied);
+        log.debug("findMitgliedById: {}", mitglied);
         return mitglied;
     }
 

@@ -16,7 +16,7 @@ import static org.springframework.http.HttpHeaders.IF_NONE_MATCH;
 @HttpExchange("/rest")
 public interface MitgliedRestRepository {
     /**
-     * Einen Kundendatensatz vom Microservice "mitglied" mit "Basic Authentication" anfordern.
+     * Einen Mitglieddatensatz vom Microservice "mitglied" anfordern.
      *
      * @param id ID des angeforderten Mitglieds
      * @param version Version des angeforderten Datensatzes

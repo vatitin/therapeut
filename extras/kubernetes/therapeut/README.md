@@ -8,9 +8,9 @@ Helm Chart für therapeut
 
 ## Maintainers
 
-| Name | Email | Url |
-| ---- | ------ | --- |
-| Jürgen Zimmermann | <Juergen.Zimmermann@h-ka.de> | <https://www.h-ka.de> |
+| Name              | Email              | Url |
+|-------------------|--------------------| --- |
+| Valentin Sackmann | <sava1013@h-ka.de> | <https://www.h-ka.de> |
 
 ## Requirements
 
@@ -24,7 +24,7 @@ Kubernetes: `>=1.25.0`
 | autoscaling.maxReplicas | int | `100` | Maximale Anzahl an Replicas |
 | autoscaling.memoryUtilizationPercentage | int | `80` | Maximale RAM-Auslastung |
 | autoscaling.minReplicas | int | `1` | Mininmale Anzahl an Replicas |
-| datasource.password | string | `"Change Me!"` |  |
+| datasource.password | string | `"p"` |  |
 | datasource.url | string | `"jdbc:postgresql://localhost/therapeut"` |  |
 | datasource.username | string | `"therapeut"` |  |
 | deployment.containerPort | int | `8080` | Port innerhalb des Containers |
@@ -34,7 +34,7 @@ Kubernetes: `>=1.25.0`
 | http2 | string | `"true"` | Flag, ob HTTP2 genutzt wird |
 | image.name | string | `"therapeut"` | Name des Image |
 | image.pullPolicy | string | `"Always"` | Pull-Policy für das Image |
-| image.repository | string | `"juergenzimmermann"` | Repository als Präfix beim Image-Namen |
+| image.repository | string | `"valentinsackmann"` | Repository als Präfix beim Image-Namen |
 | image.tag | string | `""` | Defaultwert ist im Chart bei `appVersion` und kann überschrieben werden. |
 | livenessProbe.failureThreshold | int | `3` | Max. Anzahl an Fehlversuchen bei den Liveness-Proben |
 | livenessProbe.initialDelay | int | `0` | Anzahl Setherapeuten, bis die Probe für Liveness abgesetzt wird |

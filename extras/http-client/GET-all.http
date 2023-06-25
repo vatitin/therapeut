@@ -1,5 +1,5 @@
 
 ### Suche alle Therapeuten
 GET {{restUrl}}
-Accept: application/json
+Accept: application/hal+json
 

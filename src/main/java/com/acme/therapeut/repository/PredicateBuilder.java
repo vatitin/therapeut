@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Locale.GERMAN;
 
@@ -66,6 +67,7 @@ public class PredicateBuilder {
         return switch (paramName) {
             case "nachname" -> nachname(value, qTherapeut);
             case "vorname" -> vorname(value, qTherapeut);
+            case "mitgliedId" -> mitgliedId(value, qTherapeut);
             case "email" ->  email(value, qTherapeut);
             case "geschlecht" -> geschlecht(value, qTherapeut);
             case "taetigkeitsbereiche" -> taetigkeitsbereiche(paramValues, qTherapeut);
@@ -77,6 +79,10 @@ public class PredicateBuilder {
 
     private BooleanExpression nachname(final String teil, final QTherapeut qTherapeut) {
         return qTherapeut.nachname.toLowerCase().matches("%" + teil.toLowerCase(GERMAN) + '%');
+    }
+
+    private BooleanExpression mitgliedId(final String teil, final QTherapeut qTherapeut) {
+        return qTherapeut.mitgliedId.eq(UUID.fromString(teil));
     }
 
     private BooleanExpression vorname(final String teil, final QTherapeut qTherapeut) {
@@ -101,7 +107,8 @@ public class PredicateBuilder {
             .stream()
             .map(interesseStr -> TaetigkeitsbereichType.of(interesseStr).orElse(null))
             .filter(Objects::nonNull)
-            .map(interesse -> qTherapeut.taetigkeitsbereicheStr.matches("%" + interesse.name() + '%'))
+            .map(taetigkeitsbereich -> qTherapeut.taetigkeitsbereicheStr.matches
+                ("%" + taetigkeitsbereich.name() + '%'))
             .toList();
         if (expressionList.isEmpty()) {
             return null;

@@ -101,6 +101,7 @@ class TherapeutWriteController {
     @SuppressWarnings({"MagicNumber", "RedundantSuppression"})
     private int getVersion(final Optional<String> versionOpt, final HttpServletRequest request) {
         log.trace("getVersion: {}", versionOpt);
+
         if (versionOpt.isEmpty()) {
             throw new VersionInvalidException(
                 PRECONDITION_REQUIRED,

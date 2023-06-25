@@ -42,12 +42,13 @@ final class Banner {
 
     // http://patorjk.com/software/taag/#p=display&f=Slant&t=kunde%20v2
     private static final String FIGLET = """
-            __                   __             ___
-           / /____  ______  ____/ /__     _   _|__ \\
-          / //_/ / / / __ \\/ __  / _ \\   | | / /_/ /
-         / ,< / /_/ / / / / /_/ /  __/   | |/ / __/
-        /_/|_|\\__,_/_/ /_/\\__,_/\\___/    |___/____/
-        """;
+           __  __                                     __          ___\s
+          / /_/ /_  ___  _________ _____  ___  __  __/ /_   _   _|__ \\
+         / __/ __ \\/ _ \\/ ___/ __ `/ __ \\/ _ \\/ / / / __/  | | / /_/ /
+        / /_/ / / /  __/ /  / /_/ / /_/ /  __/ /_/ / /_    | |/ / __/\s
+        \\__/_/ /_/\\___/_/   \\__,_/ .___/\\___/\\__,_/\\__/    |___/____/\s
+                                /_/                                  \s
+                """;
     private static final String JAVA = Runtime.version().toString() + " - " + System.getProperty("java.vendor");
     private static final String OS_VERSION = System.getProperty("os.name");
     private static final InetAddress LOCALHOST = getLocalhost();

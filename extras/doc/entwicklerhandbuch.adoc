@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-= Entwicklerhandbuch
+= Projekthandbuch
 Jürgen Zimmermann <Juergen.Zimmermann@h-ka.de>
 :doctype: book
 :toc: left
@@ -37,7 +37,16 @@ IMPORTANT: Copyright (C) 2015 - present Jürgen Zimmermann, Hochschule Karlsruhe
 
 === Der Microservice im Überblick
 
-bla bla
+Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Cras ultricies ligula sed magna dictum porta.
+
+.Architektur als C4 Modell für die Microservices
+[plantuml,c4,svg]
+----
+include::./c4.plantuml[]
+----
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam,
+eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
 
 .Use Cases für den Microservice "therapeut"
 [plantuml,use-cases,svg]
@@ -45,9 +54,10 @@ bla bla
 include::./use-cases.plantuml[]
 ----
 
-bla bla
+Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Vestibulum ac diam sit amet quam vehicula
+elementum sed sit amet dui.
 
-.Komponenten des Microservice "therapeut"
+.Komponenten für die REST-Schnittstelle
 [plantuml,komponenten,svg]
 ----
 include::./komponenten.plantuml[]
@@ -55,7 +65,7 @@ include::./komponenten.plantuml[]
 
 === Die REST-Schnittstelle
 
-bla bla
+Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Donec sollicitudin molestie malesuada.
 
 ."TherapeutGetController" für Lesezugriffe an der REST-Schnittstelle
 [plantuml,TherapeutGetController,svg]
@@ -69,6 +79,12 @@ include::./TherapeutGetController.plantuml[]
 include::./TherapeutModel.plantuml[]
 ----
 
+."Sequenzdiagramm" mit den Methodenaufrufen
+[plantuml,sequenzdiagramm,svg]
+----
+include::sequenzdiagramm.plantuml[]
+----
+
 ."TherapeutWriteController" für Schreibzugriffe an der REST-Schnittstelle
 [plantuml,TherapeutWriteController,svg]
 ----
@@ -77,17 +93,15 @@ include::./TherapeutWriteController.plantuml[]
 
 === Die Geschäftslogik
 
-bla bla
+Proin eget tortor risus. Curabitur aliquet quam id dui posuere blandit.
 
-.Die Service-Klasse "TherapeutReadService" für die Geschäftslogik
+."TherapeutReadService" im Anwendungskern
 [plantuml,TherapeutReadService,svg]
 ----
 include::./TherapeutReadService.plantuml[]
 ----
 
-bla bla
-
-.Die Service-Klasse "TherapeutWriteService" für die Geschäftslogik
+."TherapeutWriteService" für die Geschäftslogik
 [plantuml,TherapeutWriteService,svg]
 ----
 include::./TherapeutWriteService.plantuml[]
@@ -95,12 +109,22 @@ include::./TherapeutWriteService.plantuml[]
 
 === Die Entity-Klassen
 
-bla bla
+Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Donec rutrum congue leo eget malesuada.
 
 .Die Entity-Klasse "Therapeut" für Therapeutendaten
 [plantuml,Therapeut,svg]
 ----
 include::./Therapeut.plantuml[]
+----
+
+=== ER-Diagramm
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+.ER-Diagramm
+[plantuml,ER-Diagramm,svg]
+----
+include::./er-diagramm.plantuml[]
 ----
 
 == Programmierrichtlinien
@@ -124,7 +148,8 @@ _SQL_:: https://www.sqlstyle.guide
 
 [horizontal]
 _Microsoft_:: https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines
-_Angular_:: https://angular.io/docs/ts/latest/guide/style-guide.html
+_Angular_:: https://angular.io/guide/style-guide.html
+_Google_:: https://google.github.io/styleguide/tsguide.html
 _React_:: https://github.com/airbnb/javascript/tree/master/react
 
 === Python
@@ -134,8 +159,6 @@ _Google_:: https://google.github.io/styleguide/pyguide.html
 
 === Kotlin
 
-Für die Entwicklung mit *Kotlin* sind folgende Styleguides empfehlenswert:
-
 [horizontal]
-_Kotlin_:: https://kotlinlang.org/docs/reference/coding-conventions.html
+_Kotlin_:: https://kotlinlang.org/docs/coding-conventions.html
 _Android_:: https://developer.android.com/kotlin/style-guide

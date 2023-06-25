@@ -99,35 +99,6 @@ public class TherapeutGetController {
         return service.findAll();
     }
 
-    //todo remove
-    /*
-    @GetMapping(produces = HAL_JSON_VALUE)
-    @Operation(summary = "Suche mit Suchkriterien", tags = "Suchen")
-    @ApiResponse(responseCode = "200", description = "CollectionModel mid den Therapeuten")
-    @ApiResponse(responseCode = "404", description = "Keine Therapeuten gefunden")
-    CollectionModel<TherapeutModel> find(
-        @RequestParam @NonNull final MultiValueMap<String, String> suchkriterien,
-        final HttpServletRequest request
-    ) {
-        log.debug("find: suchkriterien={}", suchkriterien);
-
-        final var baseUri = uriHelper.getBaseUri(request).toString();
-
-        // Geschaeftslogik
-        final var models = service.find(suchkriterien)
-            .stream()
-            .map(therapeut -> {
-                final var model = new TherapeutModel(therapeut);
-                model.add(Link.of(baseUri + '/' + therapeut.getId()));
-                return model;
-            })
-            .toList();
-
-        log.debug("find: {}", models);
-        return CollectionModel.of(models);
-    }
-     */
-
     /**
      * Suche mit diversen Suchkriterien als Query-Parameter. Es wird eine Collection zurückgeliefert, damit auch der
      * Statuscode 204 möglich ist.

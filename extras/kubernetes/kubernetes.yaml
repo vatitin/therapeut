@@ -213,7 +213,7 @@ spec:
       containers:
         # https://kubernetes.io/docs/concepts/containers/images
         #- image: juergenzimmermann/therapeut@sha256:...
-        - image: juergenzimmermann/therapeut:1.0.0
+        - image: valentinsackmann/therapeut:1.0.0
           # default
           imagePullPolicy: IfNotPresent
           name: therapeut

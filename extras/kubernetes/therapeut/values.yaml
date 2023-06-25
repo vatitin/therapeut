@@ -53,7 +53,7 @@ replicaCount: 2
 
 image:
   # -- Repository als Präfix beim Image-Namen
-  repository: juergenzimmermann
+  repository: valentinsackmann
   # -- Name des Image
   name: therapeut
   # -- Pull-Policy für das Image

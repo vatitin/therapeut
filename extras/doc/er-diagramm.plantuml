@@ -1,0 +1,48 @@
+@startuml ER Diagramm
+
+hide circle
+
+skinparam linetype ortho
+
+entity "Therapeut" {
+  * id : UUID <<generated>>
+  --
+  * version: integer
+  * mitgliedId : UUID
+  * nachname : text
+  * vorname : text
+  * email : text <<unique>>
+    geburtsdatum: date
+    geschlecht: char
+  * erzeugt: timestamp
+  * aktualisiert: timestamp
+}
+
+entity "Mitglied" {
+  * id : UUID <<generated>>
+  --
+  * version: integer
+  * therapeutId : UUID
+  * name : text
+  * mitgliedschaft : MitgliedschaftType
+  * interessen : List<InteresseType>
+  * vorname : text
+    geburtsdatum: date
+    geschlecht: char
+  * erzeugt: timestamp
+  * aktualisiert: timestamp
+}
+
+entity "Adresse" {
+  * id : UUID <<generated>>
+  --
+  * plz : text
+  * ort : text
+  * therapeut_id: UUID <<FK>>
+}
+
+Therapeut ||.left.|| Adresse
+Mitglied ||..|| Adresse
+Mitglied |o..o|Therapeut
+
+@enduml
